@@ -1,0 +1,26 @@
+{
+  "name": "gravity-calculator",
+  "version": "1.0.0",
+  "description": "### 2020 őszi félév - Fizika 1i IMSC plusz pont feladat",
+  "main": "src/main.js",
+  "dependencies": {
+    "three": "^0.124.0",
+    "webpack": "^5.14.0",
+    "webpack-cli": "^4.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KostyalBalint/Gravity-calculator.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KostyalBalint/Gravity-calculator/issues"
+  },
+  "homepage": "https://github.com/KostyalBalint/Gravity-calculator#readme"
+}
