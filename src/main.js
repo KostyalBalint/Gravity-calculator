@@ -3,6 +3,7 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import * as Stats from 'stats.js';
 
 import {VoxelWorld} from './VoxelWorld.js';
+import {Physics} from './physics.js';
 
 var scene, canvas, renderer, camera, controls, stats;
 
@@ -11,6 +12,8 @@ var CONFIG = {
   cellSize: 128,    //Divide the space for this many unit
   antialias: false,
 };
+
+var physics = new Physics();
 
 
 function main() {
@@ -49,7 +52,7 @@ function main() {
   }
   controls.update();
 
-  scene.background = new THREE.Color('lightblue');
+  scene.background = new THREE.Color('#e0e0e0');
 
   addLight(2*CONFIG.wordSize, 2*CONFIG.wordSize, 2*CONFIG.wordSize);
   addLight(-2*CONFIG.wordSize, 2*CONFIG.wordSize, -2*CONFIG.wordSize);
@@ -67,6 +70,7 @@ function main() {
         let sphere = Math.pow(x - center, 2) + Math.pow(y - center, 2) + Math.pow(z - center, 2);
         if(sphere < center * center /*&& sphere > center * center - CONFIG.cellSize*/){
           world.setVoxel(x, y, z, 1);
+          physics.addVoxel(new THREE.Vector3(x, y, z).sub(new THREE.Vector3(CONFIG.cellSize / 2, CONFIG.cellSize / 2, CONFIG.cellSize / 2)));
         }
       }
     }
