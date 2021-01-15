@@ -51,8 +51,10 @@ function main() {
 
   scene.background = new THREE.Color('lightblue');
 
-  addLight(-1,  2,  4);
-  addLight( 1, -1, -2);
+  addLight(2*CONFIG.wordSize, 2*CONFIG.wordSize, 2*CONFIG.wordSize);
+  addLight(-2*CONFIG.wordSize, 2*CONFIG.wordSize, -2*CONFIG.wordSize);
+
+  scene.add( new THREE.AmbientLight( 0x939393 ) );  //Global illumination
 
   //addGroundPlane();
 
@@ -72,7 +74,7 @@ function main() {
   const sphereGroup = new THREE.Group();
   const {positions, normals, indices} = world.generateGeometryDataForCell(0, 0, 0);
   const geometry = new THREE.BufferGeometry();
-  const material = new THREE.MeshLambertMaterial({color: 'green'});
+  const material = new THREE.MeshLambertMaterial({color: '#bd7b3e'});
   const lineMaterial  = new THREE.LineBasicMaterial( { color: 0x000000, transparent: true, opacity: 0.5 } );
 
   const positionNumComponents = 3;
@@ -127,7 +129,7 @@ function addGroundPlane(){
 
 function addLight(x, y, z) {
   const color = 0xFFFFFF;
-  const intensity = 1;
+  const intensity = 0.8;
   const light = new THREE.DirectionalLight(color, intensity);
   light.castShadow = true;
   light.position.set(x, y, z);
