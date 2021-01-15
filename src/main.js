@@ -63,15 +63,24 @@ function main() {
 
   const world = new VoxelWorld(CONFIG.cellSize);
 
-  for (let y = 0; y < CONFIG.cellSize; ++y) {
-    for (let z = 0; z < CONFIG.cellSize; ++z) {
-      for (let x = 0; x < CONFIG.cellSize; ++x) {
-        let center = CONFIG.cellSize / 2;
+  var min =  -CONFIG.cellSize/2;
+  var max = CONFIG.cellSize / 2;
+  for (let y = min; y < max; ++y) {
+    for (let z = min; z < max; ++z) {
+      for (let x = min; x < max; ++x) {
+
+        if(Math.pow(Math.sqrt(x*x + y*y) - (CONFIG.cellSize/3), 2) + z*z < CONFIG.cellSize / 1/2){
+          world.setVoxel(x + max, y + max, z+ max, 1);
+          physics.addVoxel(new THREE.Vector3(x, y, z));
+
+        }
+
+        /*let center = CONFIG.cellSize / 2;
         let sphere = Math.pow(x - center, 2) + Math.pow(y - center, 2) + Math.pow(z - center, 2);
-        if(sphere < center * center /*&& sphere > center * center - CONFIG.cellSize*/){
+        if(sphere < center * center /*&& sphere > center * center - CONFIG.cellSize){
           world.setVoxel(x, y, z, 1);
           physics.addVoxel(new THREE.Vector3(x, y, z).sub(new THREE.Vector3(CONFIG.cellSize / 2, CONFIG.cellSize / 2, CONFIG.cellSize / 2)));
-        }
+        }*/
       }
     }
   }

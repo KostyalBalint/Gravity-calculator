@@ -1,9 +1,10 @@
 import * as THREE from 'three';
+import{ initChart } from './createChart.js';
 
 export class Physics{
 
   constructor(){
-    this.mass = 5.9e27;  //Mass of the whole object
+    this.mass = 5.9e3;  //Mass of the whole object
     this.voxels = [];
 
     window.physics = this;
@@ -40,13 +41,18 @@ export class Physics{
     an array of gravitational field datas
   */
   interPollateGravityField(A, B, n){
-    let step = A.distanceTo(B) / n;
     let array = [];
-    for (var i = 0; i < n; i++) {
-      let vector = A.sub(B).multiplyScalar(step * i);
+    for (var i = 1; i < n; i++) {
+      let vector = A.lerp(B, i/n);
+      console.log(vector, i/n);
       array.push(this.calculateGravitationField(vector).length());
     }
     return array;
+  }
+
+  //TODO: temporary here only
+  createChart(){
+    initChart(this.interPollateGravityField(new THREE.Vector3(0, -100000, 0), new THREE.Vector3(0, 10000, 0), 100));
   }
 
 }
