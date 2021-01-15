@@ -9,6 +9,7 @@ var scene, canvas, renderer, camera, controls, stats;
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
   cellSize: 128,    //Divide the space for this many unit
+  antialias: false,
 };
 
 
@@ -16,7 +17,7 @@ function main() {
   scene = new THREE.Scene();
   canvas = document.querySelector('#three-ctx');
 
-  renderer = new THREE.WebGLRenderer( { antialias: false, canvas } );
+  renderer = new THREE.WebGLRenderer( { antialias: CONFIG.antialias, canvas } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setClearColor(0x000000, 0);
@@ -27,8 +28,6 @@ function main() {
   //Add to window object so three js chrome debugger finds Three js
   window.scene = scene;
   window.THREE = THREE;
-
-  const cellSize = CONFIG.cellSize;
 
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
   camera.position.set(-CONFIG.wordSize, CONFIG.wordSize * 0.8, -CONFIG.wordSize);
@@ -57,23 +56,24 @@ function main() {
 
   //addGroundPlane();
 
-  const world = new VoxelWorld(cellSize);
+  const world = new VoxelWorld(CONFIG.cellSize);
 
-  for (let y = 0; y < cellSize; ++y) {
-    for (let z = 0; z < cellSize; ++z) {
-      for (let x = 0; x < cellSize; ++x) {
-        let center = cellSize / 2;
+  for (let y = 0; y < CONFIG.cellSize; ++y) {
+    for (let z = 0; z < CONFIG.cellSize; ++z) {
+      for (let x = 0; x < CONFIG.cellSize; ++x) {
+        let center = CONFIG.cellSize / 2;
         let sphere = Math.pow(x - center, 2) + Math.pow(y - center, 2) + Math.pow(z - center, 2);
-        if(sphere < center * center /*&& sphere > center * center - cellSize*/){
+        if(sphere < center * center /*&& sphere > center * center - CONFIG.cellSize*/){
           world.setVoxel(x, y, z, 1);
         }
       }
     }
   }
-
+  const sphereGroup = new THREE.Group();
   const {positions, normals, indices} = world.generateGeometryDataForCell(0, 0, 0);
   const geometry = new THREE.BufferGeometry();
   const material = new THREE.MeshLambertMaterial({color: 'green'});
+  const lineMaterial  = new THREE.LineBasicMaterial( { color: 0x000000, transparent: true, opacity: 0.5 } );
 
   const positionNumComponents = 3;
   const normalNumComponents = 3;
@@ -84,15 +84,16 @@ function main() {
       'normal',
       new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
   geometry.setIndex(indices);
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.scale.x = CONFIG.wordSize / (cellSize + 1);
-  mesh.scale.y = CONFIG.wordSize / (cellSize + 1);
-  mesh.scale.z = CONFIG.wordSize / (cellSize + 1);
+  sphereGroup.add(new THREE.Mesh(geometry, material));
+  sphereGroup.add(new THREE.LineSegments( geometry, lineMaterial ));
+  sphereGroup.scale.x = CONFIG.wordSize / (CONFIG.cellSize + 1);
+  sphereGroup.scale.y = CONFIG.wordSize / (CONFIG.cellSize + 1);
+  sphereGroup.scale.z = CONFIG.wordSize / (CONFIG.cellSize + 1);
 
-  mesh.position.x = -CONFIG.wordSize / 2;
-  mesh.position.y = -CONFIG.wordSize / 2;
-  mesh.position.z = -CONFIG.wordSize / 2;
-  scene.add(mesh);
+  sphereGroup.position.x = -CONFIG.wordSize / 2;
+  sphereGroup.position.y = -CONFIG.wordSize / 2;
+  sphereGroup.position.z = -CONFIG.wordSize / 2;
+  scene.add(sphereGroup);
 
   controls.addEventListener('change', requestRenderIfNotRequested);
   window.addEventListener('resize', requestRenderIfNotRequested);
