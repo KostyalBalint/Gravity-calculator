@@ -6,17 +6,20 @@ import {VoxelWorld} from './VoxelWorld.js';
 
 var scene, canvas, renderer, camera, controls, stats;
 
+var CONFIG = {
+  wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
+  cellSize: 128,    //Divide the space for this many unit
+};
+
 
 function main() {
   scene = new THREE.Scene();
   canvas = document.querySelector('#three-ctx');
 
-  renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
+  renderer = new THREE.WebGLRenderer( { antialias: false, canvas } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setClearColor(0x000000, 0);
-  renderer.shadowMap.enabled = false;
-  renderer.shadowMap.type = THREE.BasicShadowMap;
 
   stats = new Stats();
   document.body.appendChild(stats.dom);
@@ -25,19 +28,19 @@ function main() {
   window.scene = scene;
   window.THREE = THREE;
 
-  const cellSize = 64;
+  const cellSize = CONFIG.cellSize;
 
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-  camera.position.set(-cellSize * .5, cellSize * 1.2, -cellSize * .3);
+  camera.position.set(-CONFIG.wordSize, CONFIG.wordSize * 0.8, -CONFIG.wordSize);
 
   controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 20, 0);
+  controls.target.set(0, 0, 0);
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
   controls.dampingFactor = 0.1;
   controls.screenSpacePanning = false;
   controls.minDistance = 50;
   controls.maxDistance = 180;
-  controls.maxPolarAngle = Math.PI / 2;
+  controls.maxPolarAngle = Math.PI;
   controls.autoRotate = true;
   controls.autoRotateSpeed = 1.5;
   controls.enablePan = false;
@@ -52,7 +55,7 @@ function main() {
   addLight(-1,  2,  4);
   addLight( 1, -1, -2);
 
-  addGroundPlane();
+  //addGroundPlane();
 
   const world = new VoxelWorld(cellSize);
 
@@ -71,8 +74,6 @@ function main() {
   const {positions, normals, indices} = world.generateGeometryDataForCell(0, 0, 0);
   const geometry = new THREE.BufferGeometry();
   const material = new THREE.MeshLambertMaterial({color: 'green'});
-  geometry.castShadow = true; //default is false
-  geometry.receiveShadow = true; //default
 
   const positionNumComponents = 3;
   const normalNumComponents = 3;
@@ -84,6 +85,13 @@ function main() {
       new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
   geometry.setIndex(indices);
   const mesh = new THREE.Mesh(geometry, material);
+  mesh.scale.x = CONFIG.wordSize / (cellSize + 1);
+  mesh.scale.y = CONFIG.wordSize / (cellSize + 1);
+  mesh.scale.z = CONFIG.wordSize / (cellSize + 1);
+
+  mesh.position.x = -CONFIG.wordSize / 2;
+  mesh.position.y = -CONFIG.wordSize / 2;
+  mesh.position.z = -CONFIG.wordSize / 2;
   scene.add(mesh);
 
   controls.addEventListener('change', requestRenderIfNotRequested);
