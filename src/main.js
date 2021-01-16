@@ -10,18 +10,17 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 32,    //Divide the space for this many unit
+  cellSize: 50,    //Divide the space for this many unit
   antialias: false,
 };
 
-var physics = new Physics();
-
-var threeView;
+var physics, threeView, world;
 
 
 function main() {
 
   threeView = new ThreeView(CONFIG, document.querySelector('#three-ctx'));
+  window.threeView = threeView; //TODO: Temp
 
   animate();  //Start the animation loop
 
@@ -32,7 +31,9 @@ function main() {
 
   threeView.addGroundPlane();
 
-  const world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
+  world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
+  physics = new Physics(world);
+  window.world = world;
 
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
@@ -61,7 +62,7 @@ function main() {
       'normal',
       new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
   geometry.setIndex(indices);
-  voxelObjectGroup.add(new THREE.Mesh(geometry, material));
+  //voxelObjectGroup.add(new THREE.Mesh(geometry, material));
   voxelObjectGroup.add(new THREE.LineSegments( geometry, lineMaterial ));
 
   //Scale and move the generated object, so for every cellSize selected
@@ -69,6 +70,8 @@ function main() {
   voxelObjectGroup.applyMatrix4(world.getThreeJsWorldTransformMatrix());
 
   threeView.scene.add(voxelObjectGroup);
+
+  physics.createChart();
 }
 
 main();

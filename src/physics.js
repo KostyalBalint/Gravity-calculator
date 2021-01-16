@@ -3,19 +3,19 @@ import{ initChart } from './createChart.js';
 
 export class Physics{
 
-  constructor(){
-    this.mass = 5.9e3;  //Mass of the whole object
-    this.voxels = [];
+  constructor(voxelWorld){
+    this.mass = 5.9e24;  //Mass of the whole object
+    this.voxelWorlds = voxelWorld;
 
     window.physics = this;
   }
-
+/*
   addVoxel(voxel){
     this.voxels.push(voxel);
-  }
+  }*/
 
   massPerVoxel(){
-      return this.mass / this.voxels.length;
+      return this.mass / this.voxelWorlds.voxelCount;
   }
 
   /**
@@ -26,13 +26,30 @@ export class Physics{
       let field = new THREE.Vector3(0, 0, 0);   //Output field vector
       const G = 6.67430e-11;              //Gravitational constant
 
+      for (let x = 0; x < this.voxelWorlds.cellSize; x++) {
+          for (let y = 0; y < this.voxelWorlds.cellSize; y++) {
+              for (let z = 0; z < this.voxelWorlds.cellSize; z++) {
+                  if(this.voxelWorlds.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
+                      var voxel = new THREE.Vector3(x, y, z).applyMatrix4(this.voxelWorlds.getThreeJsWorldTransformMatrix());
+                      let r = point.distanceToSquared(voxel); //r^2
+                      if(r == 0) { return; }
+
+                      let g = G * this.massPerVoxel() / r;   // g = G * M / r^2
+
+                      //console.log(this.massPerVoxel());
+                      field.add(voxel.sub(point).multiplyScalar(g));
+                  }
+              }
+          }
+      }
+      /*
       this.voxels.forEach((voxel) => {
           let r = point.distanceToSquared(voxel); //r^2
           if(r == 0) return;
 
           let g = G * this.massPerVoxel() / r;   // g = G * M / r^2
           field.add(voxel.sub(point).multiplyScalar(g));
-      });
+      });*/
       return field;
   }
 
@@ -44,6 +61,7 @@ export class Physics{
     let array = [];
     for (var i = 1; i < n; i++) {
       let vector = A.lerp(B, i/n);
+      window.threeView.addPoint(vector.x, vector.y, vector.z);
       console.log(vector, i/n);
       array.push(this.calculateGravitationField(vector).length());
     }
@@ -52,7 +70,7 @@ export class Physics{
 
   //TODO: temporary here only
   createChart(){
-    initChart(this.interPollateGravityField(new THREE.Vector3(0, -100000, 0), new THREE.Vector3(0, 10000, 0), 100));
+    initChart(this.interPollateGravityField(new THREE.Vector3(-100, 0, 0), new THREE.Vector3(100, 0, 0), 50));
   }
 
 }

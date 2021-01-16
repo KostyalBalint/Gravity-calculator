@@ -6,6 +6,7 @@ export class VoxelWorld {
     this.cellSize = cellSize;
     this.cellSliceSize = cellSize * cellSize;
     this.cell = new Uint8Array(cellSize * cellSize * cellSize);
+    this.voxelCount = 0;
   }
   computeVoxelOffset(x, y, z) {
     const {cellSize, cellSliceSize} = this;
@@ -33,6 +34,7 @@ export class VoxelWorld {
     }
     const voxelOffset = this.computeVoxelOffset(x, y, z);
     cell[voxelOffset] = v;
+    this.voxelCount += v;
   }
   getVoxel(x, y, z) {
     const cell = this.getCellForVoxel(x, y, z);

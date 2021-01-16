@@ -100,7 +100,15 @@ export class ThreeView{
     const light = new THREE.DirectionalLight(color, intensity);
     light.castShadow = true;
     light.position.set(x, y, z);
-    scene.add(light);
+    this.scene.add(light);
+  }
+
+  addPoint(x, y, z){
+    const geometry = new THREE.SphereGeometry( 1, 8, 8 );
+    const material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+    const sphere = new THREE.Mesh( geometry, material );
+    sphere.position.set(x, y, z);
+    scene.add( sphere );
   }
 
   /*                End of helper functions                */
