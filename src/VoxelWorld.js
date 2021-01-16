@@ -88,6 +88,24 @@ export class VoxelWorld {
       indices,
     };
   }
+  //Runs through the whole word, and places one voxel for each position where the callback returns true
+  //The callback input:  - THREE.Vector3 => Point in the VoxelWord
+  //                     - min, max => bounds of the VoxelWord (as a cube)
+  fillWord(min, max, callback){
+
+    for (let y = min; y < max; ++y) {
+      for (let z = min; z < max; ++z) {
+        for (let x = min; x < max; ++x) {
+          ////0.5 center offset, so the object is properly centerd
+          if(callback(new THREE.Vector3(x, y, z).addScalar(0.5), min, max)){
+           //Offset coordinates because the VoxelWorld only accepts positive coordinates
+            let offset = Math.abs(max - min) / 2;
+            this.setVoxel(x + offset, y + offset, z + offset, 1);
+          }
+        }
+      }
+    }
+  }
 }
 
 VoxelWorld.faces = [
