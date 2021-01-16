@@ -10,7 +10,7 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 256,    //Divide the space for this many unit
+  cellSize: 32,    //Divide the space for this many unit
   antialias: false,
 };
 
@@ -32,7 +32,7 @@ function main() {
 
   threeView.addGroundPlane();
 
-  const world = new VoxelWorld(CONFIG.cellSize);
+  const world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
 
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
@@ -64,17 +64,11 @@ function main() {
   voxelObjectGroup.add(new THREE.Mesh(geometry, material));
   voxelObjectGroup.add(new THREE.LineSegments( geometry, lineMaterial ));
 
-  //Scale the generated object, so for every cellSize selected
+  //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)
-  voxelObjectGroup.scale.x = CONFIG.wordSize / (CONFIG.cellSize);
-  voxelObjectGroup.scale.y = CONFIG.wordSize / (CONFIG.cellSize);
-  voxelObjectGroup.scale.z = CONFIG.wordSize / (CONFIG.cellSize);
+  voxelObjectGroup.applyMatrix4(world.getThreeJsWorldTransformMatrix());
 
-  voxelObjectGroup.position.x = -CONFIG.wordSize / 2;
-  voxelObjectGroup.position.y = -CONFIG.wordSize / 2;
-  voxelObjectGroup.position.z = -CONFIG.wordSize / 2;
   threeView.scene.add(voxelObjectGroup);
-
 }
 
 main();

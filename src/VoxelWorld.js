@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 export class VoxelWorld {
-  constructor(cellSize) {
+  constructor(cellSize, threeWorldSize) {
+    this.threeWorldSize = threeWorldSize; //Size of the voxelWord in three Js space
     this.cellSize = cellSize;
     this.cellSliceSize = cellSize * cellSize;
     this.cell = new Uint8Array(cellSize * cellSize * cellSize);
@@ -40,6 +41,15 @@ export class VoxelWorld {
     }
     const voxelOffset = this.computeVoxelOffset(x, y, z);
     return cell[voxelOffset];
+  }
+  getThreeJsWorldTransformMatrix(){
+    var scale = this.threeWorldSize / this.cellSize;
+    var translation = -this.cellSize / 2;
+
+    var scaleMx = new THREE.Matrix4().makeScale(scale, scale, scale);
+    var translationMx = new THREE.Matrix4().makeTranslation(translation, translation, translation);
+
+    return scaleMx.multiply(translationMx);
   }
   generateGeometryDataForCell(cellX, cellY, cellZ) {
     const {cellSize} = this;
