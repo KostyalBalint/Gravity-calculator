@@ -5,17 +5,19 @@ import * as Stats from 'stats.js';
 import {ThreeView} from './ThreeView.js'
 import {VoxelWorld} from './VoxelWorld.js';   //Generates the voxel mesh for ThreeJs
 import {Physics} from './physics.js';         //Calculates the gravity
+import * as GUI from './gui.js';              //User interface
 
 var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 16,    //Divide the space for this many unit
+  cellSize: 8,    //Divide the space for this many unit
   antialias: false,
 };
 
 var physics, threeView, world;
 
+GUI.init(CONFIG);
 
 function main() {
 
@@ -67,16 +69,19 @@ function main() {
       'normal',
       new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
   geometry.setIndex(indices);
-  //voxelObjectGroup.add(new THREE.Mesh(geometry, material));
+  var mesh = new THREE.Mesh(geometry, material);
+  mesh.name = "voxelObjectMaterial"
+  voxelObjectGroup.add(mesh);
   voxelObjectGroup.add(new THREE.LineSegments( geometry, lineMaterial ));
 
   //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)
   voxelObjectGroup.applyMatrix4(world.getThreeJsWorldTransformMatrix());
+  voxelObjectGroup.name = "voxelObject";
 
   threeView.scene.add(voxelObjectGroup);
 
-  //physics.createChart();
+  physics.createChart();
 }
 
 main();

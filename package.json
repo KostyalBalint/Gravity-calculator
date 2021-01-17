@@ -5,6 +5,7 @@
   "main": "src/main.js",
   "dependencies": {
     "chart.js": "^2.9.4",
+    "jquery": "^3.5.1",
     "stats.js": "^0.17.0",
     "three": "^0.124.0",
     "webpack": "^5.14.0",

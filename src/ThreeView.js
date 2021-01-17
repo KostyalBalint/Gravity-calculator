@@ -59,6 +59,7 @@ export class ThreeView{
       this.controls.autoRotate = true;
       this.controls.autoRotateSpeed = 1.5;
       this.controls.enablePan = false;
+      this.controls.enableZoom = false;     //Disable zooom so scrolling will work
       this.controls.touches = {
         ONE: THREE.TOUCH.ROTATE,
         TWO: THREE.TOUCH.DOLLY_PAN
