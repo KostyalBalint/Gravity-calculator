@@ -16,6 +16,7 @@ export class ThreeView{
     this.initRenderer();              //Initialize the renderer
 
     this.stats = new Stats();              //Initialize the FPS viewer
+    this.stats.domElement.style.cssText = 'position:absolute;top:0px;right:0px;';
     document.body.appendChild(this.stats.dom);
 
     window.scene = this.scene;        //Add to window object so three js chrome debugger finds Three js
@@ -59,7 +60,7 @@ export class ThreeView{
       this.controls.autoRotate = true;
       this.controls.autoRotateSpeed = 1.5;
       this.controls.enablePan = false;
-      //this.controls.enableZoom = false;     //Disable zooom so scrolling will work
+      this.controls.enableZoom = false;     //Disable zooom so scrolling will work
       this.controls.touches = {
         ONE: THREE.TOUCH.ROTATE,
         TWO: THREE.TOUCH.DOLLY_PAN
