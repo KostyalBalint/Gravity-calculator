@@ -44,7 +44,7 @@ export class ThreeView{
   initCamera(){
       //TODO: Camera size based on canvas size, not window
       this.camera = new THREE.PerspectiveCamera( 45, this.canvas.clientWidth / this.canvas.clientHeight, 1, 2000 );
-      this.camera.position.set(-this.CONFIG.wordSize, this.CONFIG.wordSize * 0.8, -this.CONFIG.wordSize);
+      this.camera.position.set(this.CONFIG.wordSize * 1.2, this.CONFIG.wordSize * 0.8, this.CONFIG.wordSize * 1.2);
   }
 
   initControls(){
@@ -53,13 +53,13 @@ export class ThreeView{
       this.controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
       this.controls.dampingFactor = 0.1;
       this.controls.screenSpacePanning = false;
-      this.controls.minDistance = 50;
-      this.controls.maxDistance = 180;
+      this.controls.minDistance = 30;
+      this.controls.maxDistance = 250;
       this.controls.maxPolarAngle = Math.PI;
       this.controls.autoRotate = true;
       this.controls.autoRotateSpeed = 1.5;
       this.controls.enablePan = false;
-      this.controls.enableZoom = false;     //Disable zooom so scrolling will work
+      //this.controls.enableZoom = false;     //Disable zooom so scrolling will work
       this.controls.touches = {
         ONE: THREE.TOUCH.ROTATE,
         TWO: THREE.TOUCH.DOLLY_PAN
@@ -91,6 +91,9 @@ export class ThreeView{
     group.rotation.x = Math.PI / 2;
     this.scene.add( group );
 
+  }
+
+  addCenter(){
     this.scene.add( new THREE.AxesHelper( 20 ) );
   }
 
@@ -104,12 +107,12 @@ export class ThreeView{
     this.scene.add(light);
   }
 
-  addPoint(x, y, z, color = 0xff0000 ){
+  createPoint(x, y, z, color = 0xff0000 ){
     const geometry = new THREE.SphereGeometry( 1, 8, 8 );
     const material = new THREE.MeshBasicMaterial( {color} );
     const sphere = new THREE.Mesh( geometry, material );
     sphere.position.set(x, y, z);
-    scene.add( sphere );
+    return sphere;
   }
 
   /*                End of helper functions                */

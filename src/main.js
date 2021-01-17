@@ -11,8 +11,8 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 8,    //Divide the space for this many unit
-  antialias: false,
+  cellSize: 16,    //Divide the space for this many unit
+  antialias: true,
 };
 
 var physics, threeView, world;
@@ -31,7 +31,7 @@ function main() {
 
   threeView.scene.add( new THREE.AmbientLight( 0x939393 ) );  //Global illumination
 
-  threeView.addGroundPlane();
+  threeView.addCenter();
 
   world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
   physics = new Physics(world);
@@ -58,7 +58,7 @@ function main() {
   const {positions, normals, indices} = world.generateGeometryDataForCell(0, 0, 0);
   const geometry = new THREE.BufferGeometry();
   const material = new THREE.MeshLambertMaterial({color: '#bd7b3e', side: THREE.DoubleSide});
-  const lineMaterial  = new THREE.LineBasicMaterial( { color: 0x000000, transparent: true, opacity: 0.5 } );
+  const lineMaterial  = new THREE.LineBasicMaterial( { color: 0x000000, transparent: true, opacity: 0.5} );
 
   const positionNumComponents = 3;
   const normalNumComponents = 3;
@@ -70,9 +70,11 @@ function main() {
       new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
   geometry.setIndex(indices);
   var mesh = new THREE.Mesh(geometry, material);
-  mesh.name = "voxelObjectMaterial"
+  mesh.name = "voxelObjectMaterial";
   voxelObjectGroup.add(mesh);
-  voxelObjectGroup.add(new THREE.LineSegments( geometry, lineMaterial ));
+  var wireframe = new THREE.LineSegments( geometry, lineMaterial );
+  wireframe.name = "voxelObjectWireFrame";
+  voxelObjectGroup.add(wireframe);
 
   //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)
@@ -101,6 +103,7 @@ function onWindowResize() {
   threeView.camera.updateProjectionMatrix();
 
   threeView.renderer.setSize( threeView.canvas.clientWidth , threeView.canvas.clientHeight);
+  threeView.renderer.setPixelRatio( window.devicePixelRatio );
 
 }
 

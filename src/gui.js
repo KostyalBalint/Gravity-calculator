@@ -19,4 +19,12 @@ export function init(CONFIG){
     window.scene.getObjectByName( "voxelObjectMaterial" ).visible = $(this).prop('checked');
   });
 
+  $("#wireframeShowCheckbox").on("click", function() {
+    window.scene.getObjectByName( "voxelObjectWireFrame" ).visible = $(this).prop('checked');
+  });
+
+  $("#chartPoints").on("click", function() {
+    window.scene.getObjectByName( "chartPoints" ).visible = $(this).prop('checked');
+  });
+
 }

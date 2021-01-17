@@ -57,18 +57,22 @@ export class Physics{
   */
   interPollateGravityField(A, B, n){
     let array = [];
+    var chartPointGroup = new THREE.Group();
+    chartPointGroup.name = "chartPoints";
     for (var i = 1; i <= n; i++) {
       //let vector = A.lerp(B, i/n);
       let vector = this.getPointInBetweenByPerc(A, B, i/n);
 
-      window.threeView.addPoint(vector.x, vector.y, vector.z, 0xff0000);    //Red
+      chartPointGroup.add(window.threeView.createPoint(vector.x, vector.y, vector.z, 0xd64545));
 
       //Translate the given threeJs Vector to the VoxelWorld space
       vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
       console.log((i/n * 100) + " %");
-      array.push(this.calculateGravitationField(vector).length());
+      array.push({gravity: this.calculateGravitationField(vector), point: vector});
     }
+    window.scene.add(chartPointGroup);
+
     return array;
   }
 
@@ -83,7 +87,13 @@ export class Physics{
 
   //TODO: temporary here only
   createChart(){
-    initChart(this.interPollateGravityField(new THREE.Vector3(-200, 0, 0), new THREE.Vector3(200, 0, 0), 50));
+    let start  = new THREE.Vector3(-150, -150, -150); //Start of the interpollation
+    let end    = new THREE.Vector3(150, 150, 150);  //End of the interpollation
+    let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
+    let data = this.interPollateGravityField(start, end, 50);
+    let labels = data.map(x => x.point.distanceTo(center) );
+    data = data.map(x => x.gravity.length() );
+    initChart({labels, data});
   }
 
 }
