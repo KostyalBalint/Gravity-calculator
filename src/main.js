@@ -10,7 +10,7 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 32,    //Divide the space for this many unit
+  cellSize: 16,    //Divide the space for this many unit
   antialias: false,
 };
 
@@ -38,18 +38,18 @@ function main() {
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
 
-  /*world.fillWord(min, max, (vector, min, max) => {
+  world.fillWord(min, max, (vector, min, max) => {
     //Sphere geometry
     let sphere = Math.pow(vector.x, 2) +
                  Math.pow(vector.y, 2) +
                  Math.pow(vector.z, 2);
     return sphere < max * max;  //Max is the radius
-  });*/
-
+  });
+  /*
   world.fillWord(min, max, (vector, min, max) => {
     //Torus geometry
     return Math.pow(Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2)) - max*2/3, 2) + Math.pow(vector.z, 2) < max;
-  });
+  });*/
 
 
   const voxelObjectGroup = new THREE.Group();
