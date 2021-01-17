@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import{ initChart } from './createChart.js';
+import gravityChart from './createChart.js';
 
 export class Physics{
 
@@ -86,7 +86,7 @@ export class Physics{
   }
 
   //TODO: temporary here only
-  createChart(){
+  updateChart(){
     let start  = new THREE.Vector3(-150, 0, 0); //Start of the interpollation
     let end    = new THREE.Vector3(150, 0, 0);  //End of the interpollation
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
@@ -94,7 +94,7 @@ export class Physics{
     let data = this.interPollateGravityField(start, end, 100);
     let labels = data.map(x => x.point.distanceTo(center) );
     data = data.map(x => x.gravity.length() );
-    initChart({labels, data});
+    gravityChart.updateChart({labels, data});
   }
 
 }

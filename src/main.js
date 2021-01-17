@@ -5,13 +5,14 @@ import * as Stats from 'stats.js';
 import {ThreeView} from './ThreeView.js'
 import {VoxelWorld} from './VoxelWorld.js';   //Generates the voxel mesh for ThreeJs
 import {Physics} from './physics.js';         //Calculates the gravity
+import gravityChart from './createChart.js';
 import * as GUI from './gui.js';              //User interface
 
 var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 8,    //Divide the space for this many unit
+  cellSize: 64,    //Divide the space for this many unit
   antialias: true,
 };
 
@@ -82,8 +83,6 @@ function main() {
   voxelObjectGroup.name = "voxelObject";
 
   threeView.scene.add(voxelObjectGroup);
-
-  physics.createChart();
 }
 
 main();

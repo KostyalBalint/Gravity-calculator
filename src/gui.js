@@ -27,4 +27,8 @@ export function init(CONFIG){
     window.scene.getObjectByName( "chartPoints" ).visible = $(this).prop('checked');
   });
 
+  $("#generateChartBtn").on("click", function(){
+    window.physics.updateChart();
+  });
+
 }
