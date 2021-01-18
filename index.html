@@ -13,36 +13,64 @@
   <body>
     <div class="conteiner-fluid">
       <div class="row w-100 m-0">
-        <div class="col-12 p-0">
+        <div class="col-12 p-0 d-flex flex-column-reverse flex-lg-row">
+            <div id="settingsPanel">
+              <div class="card transparent position-lg-absolute m-4 m-lg-5">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Settings</h5>
+                  <hr>
+                  <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
+                  <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
 
-            <div class="card transparent position-absolute m-4 m-lg-5">
-              <div class="card-body">
-                <h5 class="card-title text-center">Settings</h5>
-                <hr>
-                <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
-                <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
-
-                <p class="mb-1">Geometry:</p>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Display texture</label>
+                  <p class="mb-1">Geometry:</p>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Display texture</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="wireframeShowCheckbox" checked/>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Display wireframe</label>
+                  </div>
+                  <p class="mb-1 mt-3">Chart points:</p>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chartPoints" checked/>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Display points</label>
+                  </div>
+                  <hr>
+                  <div class="btn btn-primary">Regenerate</div>
+                  <div class="btn btn-primary" id="generateChartBtn">Generate Chart</div>
                 </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="wireframeShowCheckbox" checked/>
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Display wireframe</label>
-                </div>
-                <p class="mb-1 mt-3">Chart points:</p>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="chartPoints" checked/>
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Display points</label>
-                </div>
-                <hr>
-                <div class="btn btn-primary">Regenerate</div>
-                <div class="btn btn-primary" id="generateChartBtn">Generate Chart</div>
               </div>
             </div>
-
             <canvas id="three-ctx" class="w-100 h-100"></canvas>
+        </div>
+        <div class="col-12">
+          <!--div id="settingsPanelMobile" class="card  w-100 p-3 mt-3">
+            <div class="card-body">
+              <h5 class="card-title text-center">Settings</h5>
+              <hr>
+              <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
+              <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
+
+              <p class="mb-1">Geometry:</p>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display texture</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="wireframeShowCheckbox" checked/>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display wireframe</label>
+              </div>
+              <p class="mb-1 mt-3">Chart points:</p>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="chartPoints" checked/>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display points</label>
+              </div>
+              <hr>
+              <div class="btn btn-primary">Regenerate</div>
+              <div class="btn btn-primary" id="generateChartBtn">Generate Chart</div>
+            </div>
+          </div-->
         </div>
       </div>
       <div class="row justify-content-center w-100 m-0">

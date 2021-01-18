@@ -12,8 +12,8 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 64,    //Divide the space for this many unit
-  antialias: true,
+  cellSize: 16,    //Divide the space for this many unit
+  antialias: false,
 };
 
 var physics, threeView, world;
@@ -40,6 +40,7 @@ function main() {
 
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
+
 
   world.fillWord(min, max, (vector, min, max) => {
     //Sphere geometry
