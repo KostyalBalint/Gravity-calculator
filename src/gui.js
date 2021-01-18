@@ -19,14 +19,17 @@ export function init(CONFIG){
     window.scene.getObjectByName( "voxelObjectMaterial" ).visible = $(this).prop('checked');
   });
 
+  //Toggle voxelObject wireframe visibility
   $("#wireframeShowCheckbox").on("click", function() {
     window.scene.getObjectByName( "voxelObjectWireFrame" ).visible = $(this).prop('checked');
   });
 
+  //Toggle gravity measurement points in ThreeJs scene
   $("#chartPoints").on("click", function() {
     window.scene.getObjectByName( "chartPoints" ).visible = $(this).prop('checked');
   });
 
+  //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
     window.physics.updateChart();
   });

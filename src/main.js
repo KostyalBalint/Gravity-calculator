@@ -6,6 +6,7 @@ import {ThreeView} from './ThreeView.js'
 import {VoxelWorld} from './VoxelWorld.js';   //Generates the voxel mesh for ThreeJs
 import {Physics} from './physics.js';         //Calculates the gravity
 import gravityChart from './createChart.js';
+import $ from "jquery";
 import * as GUI from './gui.js';              //User interface
 
 var scene, canvas, renderer, camera, controls, stats;
@@ -104,7 +105,6 @@ function onWindowResize() {
 
   threeView.renderer.setSize( threeView.canvas.clientWidth , threeView.canvas.clientHeight);
   threeView.renderer.setPixelRatio( window.devicePixelRatio );
-
 }
 
 function animate(){
@@ -116,6 +116,8 @@ function animate(){
   threeView.stats.update();
 
 }
+
+$( window ).resize(onWindowResize);
 
 /*              End of rendering functions               */
 /*********************************************************/
