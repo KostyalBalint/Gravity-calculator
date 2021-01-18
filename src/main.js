@@ -74,12 +74,12 @@ function main() {
   geometry.setIndex(indices);
   var mesh = new THREE.Mesh(geometry, material);
   mesh.name = "voxelObjectMaterial";
-  //voxelObjectGroup.add(mesh);
+  voxelObjectGroup.add(mesh);
   var wireframe = new THREE.LineSegments( geometry, lineMaterial );
   wireframe.name = "voxelObjectWireFrame";
   voxelObjectGroup.add(wireframe);
 
-  threeView.scene.add(voxelObjectGroup.clone());
+  //threeView.scene.add(voxelObjectGroup.clone());
 
   //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)

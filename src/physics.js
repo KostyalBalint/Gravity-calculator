@@ -27,12 +27,12 @@ export class Physics{
       //let field = new THREE.Vector3(0, 0, 0);   //Output field vector
       const G = 6.67430e-11;              //Gravitational constant
 
-      gravitys.forEach(x => {
+      /*gravitys.forEach(x => {
         let vector = x.point;
         let sphere = window.threeView.createPoint(vector.x, vector.y, vector.z, 0x0000ff);
         window.threeView.scene.add(sphere);
         //console.log(vector);
-      });
+      });*/
 
       let t0 = performance.now();
       for (let x = 0; x < this.voxelWorld.cellSize; x++) {
@@ -95,8 +95,7 @@ export class Physics{
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
-    let sphere = window.threeView.createPoint(center.x, center.y, center.z, 0x00ff00);
-    window.threeView.scene.add(sphere);
+
     gravitys.map((data) => {
       data.distance = data.point.distanceTo(center) * distanceScale;
       return data;
