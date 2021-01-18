@@ -43,18 +43,26 @@ function main() {
   var max =  CONFIG.cellSize / 2;
 
 
-  world.fillWord(min, max, (vector, min, max) => {
-    //Sphere geometry
+  //Sphere geometry generation funciton
+  var sphereFunction = (vector, min, max) => {
     let sphere = Math.pow(vector.x, 2) +
                  Math.pow(vector.y, 2) +
                  Math.pow(vector.z, 2);
     return sphere < max * max;  //Max is the radius
-  });
-/*
-  world.fillWord(min, max, (vector, min, max) => {
-    //Torus geometry
-    return Math.pow(Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2)) - max*2/3, 2) + Math.pow(vector.z, 2) < max;
-  });*/
+  }
+
+  //Torus geometry generation function
+  var torusFunction = (vector, min, max) => {
+    return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - max*2/3, 2) + Math.pow(vector.x, 2) < max;
+  }
+
+  //FlatEarth geometry generation function
+  var flatEarthfunction = (vector, min, max) => {
+    return (vector.x * vector.x) + (vector.z * vector.z) < max*max && 
+           Math.abs(vector.y) < 1;
+  };
+
+  world.fillWord(min, max, flatEarthfunction);
 
 
   const voxelObjectGroup = new THREE.Group();

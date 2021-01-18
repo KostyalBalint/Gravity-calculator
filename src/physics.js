@@ -122,7 +122,7 @@ export class Physics{
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
     let t0 = performance.now();
-    let data = this.interPollateGravityField(start, end, 100, updateProgressBar);
+    let data = this.interPollateGravityField(start, end, 400, updateProgressBar);
     let t1 = performance.now();
     console.log("interPollateGravityField took: " + (t1 - t0) + " ms");
     let labels = data.map(x => x.distance / 1000 );

@@ -14,6 +14,10 @@ export function init(CONFIG){
     CONFIG.cellSize = $(this).val();
   });
 
+  $("#voxelCount").on("mouseup", function(){
+    console.log($(this));
+  });
+
   //Toggle the voxelObject material visibility
   $("#textureShowCheckbox").on("click", function() {
     window.scene.getObjectByName( "voxelObjectMaterial" ).visible = $(this).prop('checked');
