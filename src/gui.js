@@ -31,7 +31,13 @@ export function init(CONFIG){
 
   //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
-    window.physics.updateChart();
+    $("#progessBarOverlay").fadeIn(function(){
+      window.physics.updateChart(function(precentage){
+        $("#progressBar").css("width", precentage + "%").text(precentage + " %");
+        console.log(precentage);
+      });
+    });
+    $("#progessBarOverlay").fadeOut();
   });
 
 }

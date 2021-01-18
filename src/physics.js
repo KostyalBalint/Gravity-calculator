@@ -55,7 +55,7 @@ export class Physics{
     Interpollate between A and B point n times and creates and returns
     an array of gravitational field datas
   */
-  interPollateGravityField(A, B, n){
+  interPollateGravityField(A, B, n, updateProgressBar){
     let array = [];
     var chartPointGroup = new THREE.Group();
     chartPointGroup.name = "chartPoints";
@@ -68,8 +68,11 @@ export class Physics{
       //Translate the given threeJs Vector to the VoxelWorld space
       vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
-      console.log((i/n * 100) + " %");
+      //updateProgressBar(Math.round((i/n * 100)));
+      let t0 = performance.now();
       array.push({gravity: this.calculateGravitationField(vector), point: vector});
+      let t1 = performance.now();
+      console.log("Calculate 1 point gravity took: " + (t1 - t0) + " ms");
     }
     window.scene.add(chartPointGroup);
 
@@ -86,12 +89,15 @@ export class Physics{
   }
 
   //TODO: temporary here only
-  updateChart(){
+  updateChart(updateProgressBar){
     let start  = new THREE.Vector3(-150, 0, 0); //Start of the interpollation
     let end    = new THREE.Vector3(150, 0, 0);  //End of the interpollation
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
-    let data = this.interPollateGravityField(start, end, 100);
+    let t0 = performance.now();
+    let data = this.interPollateGravityField(start, end, 100, updateProgressBar);
+    let t1 = performance.now();
+    console.log("interPollateGravityField took: " + (t1 - t0) + " ms");
     let labels = data.map(x => x.point.distanceTo(center) );
     data = data.map(x => x.gravity.length() );
     gravityChart.updateChart({labels, data});

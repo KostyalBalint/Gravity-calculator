@@ -44,35 +44,17 @@
             </div>
             <div  class="w-100" style="height: 80vh">
               <canvas id="three-ctx" class="w-100 h-100"></canvas>
-            </div>
-        </div>
-        <div class="col-12">
-          <!--div id="settingsPanelMobile" class="card  w-100 p-3 mt-3">
-            <div class="card-body">
-              <h5 class="card-title text-center">Settings</h5>
-              <hr>
-              <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
-              <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
 
-              <p class="mb-1">Geometry:</p>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
-                <label class="form-check-label" for="flexSwitchCheckDefault">Display texture</label>
+              <div id="progessBarOverlay" style="display:none;">
+                <div class="card-img-overlay position-fixed transparent d-flex" >
+                    <div class="my-auto mx-auto text-center w-75">
+                      <div class="progress">
+                        <div id="progessBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%;">25%</div>
+                      </div>
+                    </div>
+                </div>
               </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="wireframeShowCheckbox" checked/>
-                <label class="form-check-label" for="flexSwitchCheckDefault">Display wireframe</label>
-              </div>
-              <p class="mb-1 mt-3">Chart points:</p>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="chartPoints" checked/>
-                <label class="form-check-label" for="flexSwitchCheckDefault">Display points</label>
-              </div>
-              <hr>
-              <div class="btn btn-primary">Regenerate</div>
-              <div class="btn btn-primary" id="generateChartBtn">Generate Chart</div>
             </div>
-          </div-->
         </div>
       </div>
       <div class="row justify-content-center w-100 m-0">
