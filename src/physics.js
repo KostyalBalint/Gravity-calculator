@@ -20,20 +20,41 @@ export class Physics{
   }
 
   /**
-    Calculates the gravitational field strength at a given point in space
+    Calculates the gravitational field strength for an array of points
     Based on the voxels
   */
-  calculateGravitationField(point){
-      let field = new THREE.Vector3(0, 0, 0);   //Output field vector
+  calculateGravitationField(gravitys){
+      //let field = new THREE.Vector3(0, 0, 0);   //Output field vector
       const G = 6.67430e-11;              //Gravitational constant
 
+      gravitys.forEach(x => {
+        let vector = x.point;
+        let sphere = window.threeView.createPoint(vector.x, vector.y, vector.z, 0x0000ff);
+        window.threeView.scene.add(sphere);
+        console.log(vector);
+      });
+
+      let t0 = performance.now();
       for (let x = 0; x < this.voxelWorld.cellSize; x++) {
           for (let y = 0; y < this.voxelWorld.cellSize; y++) {
               for (let z = 0; z < this.voxelWorld.cellSize; z++) {
                   if(this.voxelWorld.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
                       //Add 0.5 to voxel so we calculate to the center of the voxel
-                      var voxel = new THREE.Vector3(x+0.5, y+0.5, z+0.5);
 
+
+                      gravitys.map((data) => {
+                        var voxel = new THREE.Vector3(x+0.5, y+0.5, z+0.5);
+                        var r = data.point.distanceToSquared(voxel); //r^2
+
+                        //Compensate vector units to meters according to the earh size
+                        r *= (this.diameter * this.diameter) / (this.voxelWorld.cellSize * this.voxelWorld.cellSize);
+
+                        var g = G * this.massPerVoxel() / r;   // g = G * M / r^2
+
+                        data.gravity.add(voxel.sub(data.point).multiplyScalar(g));
+                        return data;
+                      });
+/*
                       let r = point.distanceToSquared(voxel); //r^2
                       if(r == 0) { continue; }  //If r is 0, g will be Infinity, but we can ignore these cases
 
@@ -42,13 +63,19 @@ export class Physics{
 
                       let g = G * this.massPerVoxel() / r;   // g = G * M / r^2
 
-                      field.add(voxel.sub(point).multiplyScalar(g));
-
+                      field.add(voxel.sub(point).multiplyScalar(g));*/
+                      let sphere = window.threeView.createPoint(x, y, z, 0x00ff00);
+                      console.log(x, y, z);
+                      window.threeView.scene.add(sphere);
                   }
               }
           }
       }
-      return field;
+
+      let t1 = performance.now();
+      console.log("Calculate 1 point gravity took: " + (t1 - t0) / gravitys.length + " ms");
+      return gravitys;
+      //return field;
   }
 
   /**
@@ -56,9 +83,11 @@ export class Physics{
     an array of gravitational field datas
   */
   interPollateGravityField(A, B, n, updateProgressBar){
-    let array = [];
+    let gravitys = [];  //The calculated gravity values and points, to which we need gravity values
+
     var chartPointGroup = new THREE.Group();
     chartPointGroup.name = "chartPoints";
+
     for (var i = 1; i <= n; i++) {
       //let vector = A.lerp(B, i/n);
       let vector = this.getPointInBetweenByPerc(A, B, i/n);
@@ -69,14 +98,25 @@ export class Physics{
       vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
       //updateProgressBar(Math.round((i/n * 100)));
-      let t0 = performance.now();
-      array.push({gravity: this.calculateGravitationField(vector), point: vector});
-      let t1 = performance.now();
-      console.log("Calculate 1 point gravity took: " + (t1 - t0) + " ms");
+
+      //Point: to this point we calculate the gravity value
+      //Gravity: calculated gravity vector
+      gravitys.push({point: vector, gravity: new THREE.Vector3(0, 0, 0)});
     }
+
+    gravitys = this.calculateGravitationField(gravitys);
+
+    var distanceScale = this.diameter / this.voxelWorld.cellSize;
+    let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
+    center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
+    gravitys.map((data) => {
+      data.distance = data.point.distanceTo(center) * distanceScale;
+      return data;
+    });
+
     window.scene.add(chartPointGroup);
 
-    return array;
+    return gravitys;
   }
 
   //Interpollate between A and B vectors at precentage
@@ -90,15 +130,15 @@ export class Physics{
 
   //TODO: temporary here only
   updateChart(updateProgressBar){
-    let start  = new THREE.Vector3(-150, 0, 0); //Start of the interpollation
-    let end    = new THREE.Vector3(150, 0, 0);  //End of the interpollation
+    let start  = new THREE.Vector3(-250, 0, 0); //Start of the interpollation
+    let end    = new THREE.Vector3(250, 0, 0);  //End of the interpollation
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
     let t0 = performance.now();
     let data = this.interPollateGravityField(start, end, 100, updateProgressBar);
     let t1 = performance.now();
     console.log("interPollateGravityField took: " + (t1 - t0) + " ms");
-    let labels = data.map(x => x.point.distanceTo(center) );
+    let labels = data.map(x => x.distance / 1000 );
     data = data.map(x => x.gravity.length() );
     gravityChart.updateChart({labels, data});
   }

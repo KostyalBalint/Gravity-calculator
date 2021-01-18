@@ -29,8 +29,9 @@ class GravityChart{
           xAxes: [{
             ticks: {
               autoSkip: true,
-              maxRotation: 0,
+              maxRotation: 20,
               stepSize: 10,
+              callback: (val) => { return val + ' km' }
             },
             scaleLabel: {
               display: true,
@@ -52,7 +53,6 @@ class GravityChart{
   }
 
   updateChart(data){
-    console.log(this.chart.data);
     this.chart.data.labels = data.labels.map(x => x.toFixed(2));
     this.chart.data.datasets[0].data = data.data.map(x => x.toFixed(2));
     this.chart.update();

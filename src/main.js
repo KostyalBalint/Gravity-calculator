@@ -13,7 +13,7 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 64,    //Divide the space for this many unit
+  cellSize: 8,    //Divide the space for this many unit
   antialias: false,
 };
 
@@ -50,11 +50,11 @@ function main() {
                  Math.pow(vector.z, 2);
     return sphere < max * max;  //Max is the radius
   });
-
+/*
   world.fillWord(min, max, (vector, min, max) => {
     //Torus geometry
     return Math.pow(Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2)) - max*2/3, 2) + Math.pow(vector.z, 2) < max;
-  });
+  });*/
 
 
   const voxelObjectGroup = new THREE.Group();
@@ -74,10 +74,12 @@ function main() {
   geometry.setIndex(indices);
   var mesh = new THREE.Mesh(geometry, material);
   mesh.name = "voxelObjectMaterial";
-  voxelObjectGroup.add(mesh);
+  //voxelObjectGroup.add(mesh);
   var wireframe = new THREE.LineSegments( geometry, lineMaterial );
   wireframe.name = "voxelObjectWireFrame";
   voxelObjectGroup.add(wireframe);
+
+  threeView.scene.add(voxelObjectGroup.clone());
 
   //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)
