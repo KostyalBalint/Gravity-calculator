@@ -13,7 +13,7 @@ var scene, canvas, renderer, camera, controls, stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 8,    //Divide the space for this many unit
+  cellSize: 128,    //Divide the space for this many unit
   antialias: false,
 };
 

@@ -31,7 +31,7 @@ export class Physics{
         let vector = x.point;
         let sphere = window.threeView.createPoint(vector.x, vector.y, vector.z, 0x0000ff);
         window.threeView.scene.add(sphere);
-        console.log(vector);
+        //console.log(vector);
       });
 
       let t0 = performance.now();
@@ -40,8 +40,6 @@ export class Physics{
               for (let z = 0; z < this.voxelWorld.cellSize; z++) {
                   if(this.voxelWorld.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
                       //Add 0.5 to voxel so we calculate to the center of the voxel
-
-
                       gravitys.map((data) => {
                         var voxel = new THREE.Vector3(x+0.5, y+0.5, z+0.5);
                         var r = data.point.distanceToSquared(voxel); //r^2
@@ -51,22 +49,9 @@ export class Physics{
 
                         var g = G * this.massPerVoxel() / r;   // g = G * M / r^2
 
-                        data.gravity.add(voxel.sub(data.point).multiplyScalar(g));
+                        data.gravity.add(voxel.sub(data.point).normalize().multiplyScalar(g));
                         return data;
                       });
-/*
-                      let r = point.distanceToSquared(voxel); //r^2
-                      if(r == 0) { continue; }  //If r is 0, g will be Infinity, but we can ignore these cases
-
-                      //Compensate vector units to meters according to the earh size
-                      r *= Math.pow(this.diameter / this.voxelWorld.cellSize , 2);
-
-                      let g = G * this.massPerVoxel() / r;   // g = G * M / r^2
-
-                      field.add(voxel.sub(point).multiplyScalar(g));*/
-                      let sphere = window.threeView.createPoint(x, y, z, 0x00ff00);
-                      console.log(x, y, z);
-                      window.threeView.scene.add(sphere);
                   }
               }
           }
@@ -109,6 +94,9 @@ export class Physics{
     var distanceScale = this.diameter / this.voxelWorld.cellSize;
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
+
+    let sphere = window.threeView.createPoint(center.x, center.y, center.z, 0x00ff00);
+    window.threeView.scene.add(sphere);
     gravitys.map((data) => {
       data.distance = data.point.distanceTo(center) * distanceScale;
       return data;
@@ -130,8 +118,8 @@ export class Physics{
 
   //TODO: temporary here only
   updateChart(updateProgressBar){
-    let start  = new THREE.Vector3(-250, 0, 0); //Start of the interpollation
-    let end    = new THREE.Vector3(250, 0, 0);  //End of the interpollation
+    let start  = new THREE.Vector3(0, 0, -150); //Start of the interpollation
+    let end    = new THREE.Vector3(0, 0, 150);  //End of the interpollation
     let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
     let t0 = performance.now();
