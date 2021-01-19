@@ -62,7 +62,7 @@ function main() {
            Math.abs(vector.y) < 1;
   };
 
-  world.fillWord(min, max, flatEarthfunction);
+  world.fillWord(min, max, sphereFunction);
 
 
   const voxelObjectGroup = new THREE.Group();

@@ -104,7 +104,7 @@ export class VoxelWorld {
   //The callback input:  - THREE.Vector3 => Point in the VoxelWord
   //                     - min, max => bounds of the VoxelWord (as a cube)
   fillWord(min, max, callback){
-
+    let t0 = performance.now();
     for (let y = min; y < max; ++y) {
       for (let z = min; z < max; ++z) {
         for (let x = min; x < max; ++x) {
@@ -117,6 +117,8 @@ export class VoxelWorld {
         }
       }
     }
+    let t1 = performance.now();
+    console.log("Filling the geometry took: " + (t1 - t0).toFixed(2) + " ms");
   }
 }
 

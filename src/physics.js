@@ -34,31 +34,42 @@ export class Physics{
         //console.log(vector);
       });*/
 
+      let geometryPoints = [];
+
       let t0 = performance.now();
       for (let x = 0; x < this.voxelWorld.cellSize; x++) {
+        console.log(((x+1) / this.voxelWorld.cellSize) * 100);
           for (let y = 0; y < this.voxelWorld.cellSize; y++) {
               for (let z = 0; z < this.voxelWorld.cellSize; z++) {
                   if(this.voxelWorld.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
-                      //Add 0.5 to voxel so we calculate to the center of the voxel
-                      gravitys.map((data) => {
-                        var voxel = new THREE.Vector3(x+0.5, y+0.5, z+0.5);
-                        var r = data.point.distanceToSquared(voxel); //r^2
-
-                        //Compensate vector units to meters according to the earh size
-                        r *= (this.diameter * this.diameter) / (this.voxelWorld.cellSize * this.voxelWorld.cellSize);
-
-                        var g = G * this.massPerVoxel() / r;   // g = G * M / r^2
-
-                        data.gravity.add(voxel.sub(data.point).normalize().multiplyScalar(g));
-                        return data;
-                      });
+                    //Add 0.5 to voxel so we calculate to the center of the voxel
+                    geometryPoints.push(new THREE.Vector3(x+0.5, y+0.5, z+0.5));
                   }
               }
           }
       }
-
+      console.log("Get points from geometry took: " + (performance.now() - t0) + " ms");
       let t1 = performance.now();
-      console.log("Calculate 1 point gravity took: " + (t1 - t0) / gravitys.length + " ms");
+
+      let radiusCompensate = (this.diameter * this.diameter) / (this.voxelWorld.cellSize * this.voxelWorld.cellSize);
+      let gravityHelper = G * this.massPerVoxel();  //Compensate vector units to meters according to the earh size
+
+      let a = 0;
+      geometryPoints.forEach((voxel) => {
+        gravitys.map((data) => {
+          //var r = data.point.distanceToSquared(voxel) * radiusCompensate; //r^2
+
+          //var g =  gravityHelper / r;   // g = G * M / r^2
+
+          //data.gravity.add(voxel.clone().sub(data.point).normalize().multiplyScalar(g));
+          a += 1;
+          return data;
+        });
+      });
+      console.log(a);
+
+      console.log("Calculate gravity took: " + (performance.now() - t1) + " ms");
+      console.log("Calculate 1 point gravity took: " + (performance.now() - t1) / gravitys.length + " ms");
       return gravitys;
       //return field;
   }
