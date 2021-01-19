@@ -75,11 +75,14 @@ export class Physics{
       }, {
         constants: {
                       voxelLength: voxelPoints.length,
-                      radiusCompensate, gravityHelper
+                      radiusCompensate,
+                      gravityHelper
                     },
         output: [measuringPoints.length],
       });
-      /*
+      /* -----------------------------------------------
+           This function is implemented to run on GPU
+         -----------------------------------------------
       gravitys.map((data) => {
         voxelPoints.forEach((voxel) => {
           var r = data.point.distanceToSquared(voxel) * radiusCompensate; //r^2
@@ -91,17 +94,14 @@ export class Physics{
         });
       });*/
 
-      console.log("Calculate gravity took: " + (performance.now() - t0) + " ms");
-      console.log("Calculate 1 point gravity took: " + (performance.now() - t0) / measuringPoints.length + " ms");
-
       var gravitysRaw =  calculateGravity(voxelPoints, measuringPoints);
-      console.log(gravitysRaw[0]);
       let gravitys = [];
       for (var i = 0; i < measuringPoints.length; i++) {
         gravitys.push({gravity : (new THREE.Vector3(gravitysRaw[i][0], gravitysRaw[i][1], gravitysRaw[i][2]))});
       }
+
+      console.log("Calculate gravity took: " + (performance.now() - t0).toFixed(2) + " ms");
       return gravitys;
-      //return field;
   }
 
   /**
@@ -123,10 +123,6 @@ export class Physics{
       //Translate the given threeJs Vector to the VoxelWorld space
       vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
-      //updateProgressBar(Math.round((i/n * 100)));
-
-      //Point: to this point we calculate the gravity value
-      //Gravity: calculated gravity vector
       measuringPoints.push([vector.x, vector.y, vector.z]);
     }
 
@@ -159,12 +155,7 @@ export class Physics{
   updateChart(updateProgressBar){
     let start  = new THREE.Vector3(0, 0, -150); //Start of the interpollation
     let end    = new THREE.Vector3(0, 0, 150);  //End of the interpollation
-    let center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
-    center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
-    let t0 = performance.now();
-    let data = this.interPollateGravityField(start, end, 1000, updateProgressBar);
-    let t1 = performance.now();
-    console.log("interPollateGravityField took: " + (t1 - t0) + " ms");
+    let data = this.interPollateGravityField(start, end, 500, updateProgressBar);
     let labels = data.map(x => x.distance / 1000 );
     data = data.map(x => x.gravity.length() );
     gravityChart.updateChart({labels, data});

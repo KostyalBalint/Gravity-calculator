@@ -62,7 +62,7 @@ function main() {
            Math.abs(vector.y) < 1;
   };
 
-  world.fillWord(min, max, sphereFunction);
+  world.fillWord(min, max, torusFunction);
 
 
   const voxelObjectGroup = new THREE.Group();
@@ -87,8 +87,6 @@ function main() {
   wireframe.name = "voxelObjectWireFrame";
   voxelObjectGroup.add(wireframe);
 
-  //threeView.scene.add(voxelObjectGroup.clone());
-
   //Scale and move the generated object, so for every cellSize selected
   //wi will get the same bounds in threeJs (worldSize)
   voxelObjectGroup.applyMatrix4(world.getThreeJsWorldTransformMatrix());
@@ -105,7 +103,7 @@ main();
 /*                  Rendering functions                  */
 /*   This would look better in the threeView class,      */
 /*   but because of requestAnimationFrame( animate )     */
-/*   function it's easier to do it Sphere                */
+/*   function it's easier to do it here                  */
 /*********************************************************/
 
 function onWindowResize() {
