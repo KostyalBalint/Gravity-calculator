@@ -3,6 +3,7 @@ import Chart from 'chart.js';
 
 class GravityChart{
   constructor(direction){
+    window.chart = this;
     this.ctx = document.getElementById('gravity-chart').getContext('2d');
     this.chart = new Chart(this.ctx, {
       // The type of chart we want to create
@@ -53,10 +54,10 @@ class GravityChart{
   }
 
   updateChart(data, direction){
-    this.chart.data.datasets[0].borderColor = direction.color;
-    this.chart.data.datasets[0].label = "Gravitational field strength along the: " + direction.name;
-    this.chart.data.labels = data.labels.map(x => x.toFixed(2));
-    this.chart.data.datasets[0].data = data.data.map(x => x.toFixed(2));
+    this.chart.data.datasets[0].borderColor = direction ? direction.color : "";
+    this.chart.data.datasets[0].label = direction ? "Gravitational field strength along the: " + direction.name : "";
+    this.chart.data.labels = data ? data.labels.map(x => x.toFixed(2)) : [];
+    this.chart.data.datasets[0].data = data ? data.data.map(x => x.toFixed(2)) : [];
     this.chart.update();
   }
 }

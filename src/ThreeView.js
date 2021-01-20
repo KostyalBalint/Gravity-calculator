@@ -116,6 +116,14 @@ export class ThreeView{
     return sphere;
   }
 
+  removeGroupByName(name){
+    this.scene.traverse(function(child){
+        if(child.name == name){
+           scene.remove(child);
+        }
+    });
+  }
+
   /*                End of helper functions                */
   /*********************************************************/
 

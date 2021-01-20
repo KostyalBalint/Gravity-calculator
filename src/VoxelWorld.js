@@ -8,6 +8,12 @@ export class VoxelWorld {
     this.cell = new Uint8Array(cellSize * cellSize * cellSize);
     this.voxelCount = 0;
   }
+  reInit(cellSize){
+    this.cellSize = cellSize;
+    this.cellSliceSize = cellSize * cellSize;
+    this.cell = new Uint8Array(cellSize * cellSize * cellSize);
+    this.voxelCount = 0;
+  }
   computeVoxelOffset(x, y, z) {
     const {cellSize, cellSliceSize} = this;
     const voxelX = THREE.MathUtils.euclideanModulo(x, cellSize) | 0;
@@ -120,6 +126,12 @@ export class VoxelWorld {
     let t1 = performance.now();
     console.log("Filling the geometry took: " + (t1 - t0).toFixed(2) + " ms");
   }
+
+  //Clear the whole VoxelWorld
+  /*deleteWorld(){
+    this.voxelCount = 0;
+    this.cell = new Uint8Array(this.cellSize * this.cellSize * this.cellSize);
+  }*/
 }
 
 VoxelWorld.faces = [

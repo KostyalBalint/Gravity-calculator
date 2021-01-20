@@ -17,53 +17,75 @@ var CONFIG = {
   antialias: false,
 };
 
+
+//This array contains the generation functions, and names for the given shape
+var geometrys = [
+  {
+    name: "Sphere",
+    function: (vector, min, max) => {
+      return Math.pow(vector.x, 2) + Math.pow(vector.y, 2) + Math.pow(vector.z, 2) < max * max;
+    }
+  },{
+    name: "Torus",
+    function: (vector, min, max) => {
+      return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - max*2/3, 2) + Math.pow(vector.x, 2) < max;
+    }
+  },{
+    name: "Flat earth",
+    function: (vector, min, max) => {
+      return (vector.x * vector.x) + (vector.z * vector.z) < max*max && Math.abs(vector.y) < 1;
+    }
+  }
+];
+
 var physics, threeView, world;
 
-GUI.init(CONFIG);
+GUI.init(CONFIG, geometrys);
 
 function main() {
 
   threeView = new ThreeView(CONFIG, document.querySelector('#three-ctx'));
-  window.threeView = threeView; //TODO: Temp
+  window.threeView = threeView;
 
   animate();  //Start the animation loop
 
+  initThreeView();
+
+  world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
+  physics = new Physics();
+  window.world = world;
+
+  createVoxelGeometry();
+}
+
+function initThreeView(){
+  //Clear the scene
+  while(window.scene.children.length > 0){
+    window.scene.remove(window.scene.children[0]);
+  }
   threeView.addLight(2*CONFIG.wordSize, 2*CONFIG.wordSize, 2*CONFIG.wordSize);
   threeView.addLight(-2*CONFIG.wordSize, 2*CONFIG.wordSize, -2*CONFIG.wordSize);
 
   threeView.scene.add( new THREE.AmbientLight( 0x939393 ) );  //Global illumination
 
   threeView.addCenter();
+}
 
-  world = new VoxelWorld(CONFIG.cellSize, CONFIG.wordSize);
-  physics = new Physics(world);
-  window.world = world;
+main();
 
+$("#voxelCount").on('change', createVoxelGeometry);
+$("#geometrySelect").on('change', createVoxelGeometry);
+
+function createVoxelGeometry(){
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
+  var geometryId = parseInt($("#geometrySelect").val());
 
+  window.world.reInit(CONFIG.cellSize);
+  window.world.fillWord(min, max, geometrys[geometryId].function);
 
-  //Sphere geometry generation funciton
-  var sphereFunction = (vector, min, max) => {
-    let sphere = Math.pow(vector.x, 2) +
-                 Math.pow(vector.y, 2) +
-                 Math.pow(vector.z, 2);
-    return sphere < max * max;  //Max is the radius
-  }
-
-  //Torus geometry generation function
-  var torusFunction = (vector, min, max) => {
-    return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - max*2/3, 2) + Math.pow(vector.x, 2) < max;
-  }
-
-  //FlatEarth geometry generation function
-  var flatEarthfunction = (vector, min, max) => {
-    return (vector.x * vector.x) + (vector.z * vector.z) < max*max && 
-           Math.abs(vector.y) < 1;
-  };
-
-  world.fillWord(min, max, sphereFunction);
-
+  initThreeView();
+  window.chart.updateChart();
 
   const voxelObjectGroup = new THREE.Group();
   const {positions, normals, indices} = world.generateGeometryDataForCell(0, 0, 0);
@@ -92,10 +114,8 @@ function main() {
   voxelObjectGroup.applyMatrix4(world.getThreeJsWorldTransformMatrix());
   voxelObjectGroup.name = "voxelObject";
 
-  threeView.scene.add(voxelObjectGroup);
+  window.threeView.scene.add(voxelObjectGroup);
 }
-
-main();
 
 
 /*********************************************************/

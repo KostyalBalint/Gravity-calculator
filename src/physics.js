@@ -4,10 +4,9 @@ import gravityChart from './createChart.js';
 
 export class Physics{
 
-  constructor(voxelWorld){
+  constructor(){
     this.mass = 5.9e24;       //Mass of the whole object, it's around the earth mass
     this.diameter = 12742000; //Diameter of the earth in meters
-    this.voxelWorld = voxelWorld;
 
     this.gpu = new GPU(); //GPU instance to calculate gravity paralell
 
@@ -36,7 +35,7 @@ export class Physics{
   }
 
   massPerVoxel(){
-      return this.mass / this.voxelWorld.voxelCount;
+      return this.mass / window.world.voxelCount;
   }
 
   /**
@@ -46,10 +45,10 @@ export class Physics{
     let t0 = performance.now();
     let geometryPoints = [];
 
-    for (let x = 0; x < this.voxelWorld.cellSize; x++) {
-        for (let y = 0; y < this.voxelWorld.cellSize; y++) {
-            for (let z = 0; z < this.voxelWorld.cellSize; z++) {
-                if(this.voxelWorld.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
+    for (let x = 0; x < window.world.cellSize; x++) {
+        for (let y = 0; y < window.world.cellSize; y++) {
+            for (let z = 0; z < window.world.cellSize; z++) {
+                if(window.world.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
                   //Add 0.5 to voxel so we calculate to the center of the voxel
                   geometryPoints.push([x+0.5, y+0.5, z+0.5]);
                   //geometryPoints.push(new THREE.Vector3(x+0.5, y+0.5, z+0.5));
@@ -70,7 +69,7 @@ export class Physics{
       let t0 = performance.now();         //Start of the calculation, for benchmarking
       const G = 6.67430e-11;              //Gravitational constant
       //Compensate vector units to meters according to the earh size
-      let radiusCompensate = (this.diameter * this.diameter) / (this.voxelWorld.cellSize * this.voxelWorld.cellSize);
+      let radiusCompensate = (this.diameter * this.diameter) / (window.world.cellSize * window.world.cellSize);
       let gravityHelper = G * this.massPerVoxel();
 
       var voxelPoints = this.getVoxelGeometryPoints();
@@ -153,11 +152,7 @@ export class Physics{
     let measuringPoints = [];  //The points to which we calculate gravity value
 
     //Remove the previos point group if any
-    scene.traverse(function(child){
-        if(child.name == "chartPoints"){
-           scene.remove(child);
-        }
-    });
+    window.threeView.removeGroupByName("chartPoints");
 
     var chartPointGroup = new THREE.Group();
     chartPointGroup.name = "chartPoints";
@@ -169,16 +164,16 @@ export class Physics{
       chartPointGroup.add(window.threeView.createPoint(vector.x, vector.y, vector.z, color));
 
       //Translate the given threeJs Vector to the VoxelWorld space
-      vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
+      vector.applyMatrix4(window.world.getThreeJsWorldTransformMatrix().invert());
 
       measuringPoints.push([vector.x, vector.y, vector.z]);
     }
 
     var gravitys = this.calculateGravitationField(measuringPoints);
 
-    var distanceScale = this.diameter / this.voxelWorld.cellSize;
+    var distanceScale = this.diameter / window.world.cellSize;
     var center = new THREE.Vector3(0, 0, 0);    //Center to which the distance is measured in the chart
-    center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
+    center.applyMatrix4(window.world.getThreeJsWorldTransformMatrix().invert());
 
     gravitys.map((data) => {
       data.distanceToCenter = data.point.distanceTo(center) * distanceScale;

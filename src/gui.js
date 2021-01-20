@@ -2,7 +2,7 @@
 
 //import $ from "jquery";
 
-export function init(CONFIG){
+export function init(CONFIG, geometrys){
 
   //Set the cellSize slider to the default from config
   $("#voxelCount").val(CONFIG.cellSize);
@@ -12,14 +12,15 @@ export function init(CONFIG){
   $("#chartPoints").prop('disabled', true);
   $("#gravityPoints").prop('disabled', true);
 
+  //Fill up geometry selection box
+  geometrys.forEach((geometry, i) => {
+    $("#geometrySelect").append('<option value="' + i + '">' + geometry.name + '</option>');
+  });
+
   //cellSize slider event listener, so the text will change as the user slides the slider
   $("#voxelCount").on("change mousemove", function() {
     $("#voxelCountText").html($(this).val());
-    CONFIG.cellSize = $(this).val();
-  });
-
-  $("#voxelCount").on("mouseup", function(){
-    console.log($(this));
+    CONFIG.cellSize = parseInt($(this).val());
   });
 
   //Toggle the voxelObject material visibility
