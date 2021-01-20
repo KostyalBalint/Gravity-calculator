@@ -19,26 +19,51 @@
                 <div class="card-body">
                   <h5 class="card-title text-center">Settings</h5>
                   <hr>
+
                   <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
                   <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
+                  <div class="mb-3 d-flex flex-row align-items-center">
+                    <p class="mb-0">Shape:</p>
+                    <div class="p-3 pb-0 pt-0">
+                      <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option value="sphere">Sphere</option>
+                        <option value="torus" selected>Torus</option>
+                        <option value="flatEarth">FlatEarth</option>
+                      </select>
+                    </div>
+                  </div>
 
-                  <p class="mb-1">Geometry:</p>
+                  <p class="mb-1">View options:</p>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Display texture</label>
+                    <label class="form-check-label" for="textureShowCheckbox">Show texture</label>
                   </div>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="wireframeShowCheckbox" checked/>
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Display wireframe</label>
+                    <label class="form-check-label" for="wireframeShowCheckbox">Show wireframe</label>
                   </div>
-                  <p class="mb-1 mt-3">Chart points:</p>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="chartPoints" checked/>
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Display points</label>
+                    <label class="form-check-label" for="chartPoints">Show chart points</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="gravityPoints" checked/>
+                    <label class="form-check-label" for="gravityPoints">Show 3D gravitational field</label>
+                  </div>
+                  <p class="mb-1 mt-3">Chart generate options</p>
+                  <div class="btn-group btn-group-sm" id="chartRadio" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="chartRadioX" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="chartRadioX">X axis</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="chartRadioY" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="chartRadioY">Y axis</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="chartRadioZ" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="chartRadioZ">Z axis</label>
                   </div>
                   <hr>
-                  <div class="btn btn-primary">Regenerate</div>
-                  <div class="btn btn-primary" id="generateChartBtn">Generate Chart</div>
+                  <div class="btn btn-sm btn-primary" id="generateChartBtn">Generate Chart</div>
+                  <div class="btn btn-sm btn-success">Regenerate geometry</div>
                 </div>
               </div>
             </div>
@@ -48,7 +73,7 @@
               <div id="calculationOverlay" style="display:none;">
                 <div class="card-img-overlay position-fixed transparent d-flex" >
                     <div class="my-auto mx-auto text-center w-75">
-                      <p>Calculation running ...</p>
+                      <h3 class="text-dark">Calculation running ...</h3>
                     </div>
                 </div>
               </div>

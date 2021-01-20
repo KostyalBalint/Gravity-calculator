@@ -8,6 +8,10 @@ export function init(CONFIG){
   $("#voxelCount").val(CONFIG.cellSize);
   $("#voxelCountText").html($("#voxelCount").val());
 
+  //Set switches to default
+  $("#chartPoints").prop('disabled', true);
+  $("#gravityPoints").prop('disabled', true);
+
   //cellSize slider event listener, so the text will change as the user slides the slider
   $("#voxelCount").on("change mousemove", function() {
     $("#voxelCountText").html($(this).val());
@@ -35,12 +39,18 @@ export function init(CONFIG){
 
   //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
+    $("#chartPoints").prop('disabled', false);
     $("#calculationOverlay").fadeIn(function(){
-      //Update chart can't be async because of GPU computation, this means
-      //We can't update the GUI while it's running
-      window.physics.updateChart();
+      //50 ms timeout gives enough time to the GUI to update before we calculate the chart
+      setTimeout(function(){
+        //Update chart can't be async because of GPU computation, this means
+        //We can't update the GUI while it's running
+        window.physics.updateChart();
+
+        //After the update finnished fadeOut the overlay
+        $("#calculationOverlay").fadeOut();
+      }, 50);
     });
-    $("#calculationOverlay").fadeOut();
   });
 
 }
