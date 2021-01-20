@@ -31,6 +31,7 @@ export class Physics{
                 if(this.voxelWorld.getVoxel(x, y, z) === 1){  //We have a voxel at this coordinate
                   //Add 0.5 to voxel so we calculate to the center of the voxel
                   geometryPoints.push([x+0.5, y+0.5, z+0.5]);
+                  //geometryPoints.push(new THREE.Vector3(x+0.5, y+0.5, z+0.5));
                 }
             }
         }
@@ -47,8 +48,9 @@ export class Physics{
   calculateGravitationField(measuringPoints){
       let t0 = performance.now();         //Start of the calculation, for benchmarking
       const G = 6.67430e-11;              //Gravitational constant
+      //Compensate vector units to meters according to the earh size
       let radiusCompensate = (this.diameter * this.diameter) / (this.voxelWorld.cellSize * this.voxelWorld.cellSize);
-      let gravityHelper = G * this.massPerVoxel();  //Compensate vector units to meters according to the earh size
+      let gravityHelper = G * this.massPerVoxel();
 
       var voxelPoints = this.getVoxelGeometryPoints();
 
@@ -65,15 +67,19 @@ export class Physics{
           var g =  gravityHelper / r;   // g = G * M / r^2
 
           data.gravity.add(voxel.clone().sub(data.point).normalize().multiplyScalar(g));
-          return data;
         });
+        return data;
       });*/
+
       let t0GPU = performance.now();
       var gravitysRaw =  calculateGravity(voxelPoints, measuringPoints);
       console.log(" - Gravity calculation GPU part took: " + (performance.now() - t0GPU).toFixed(2) + " ms");
       let gravitys = [];
       for (var i = 0; i < measuringPoints.length; i++) {
-        gravitys.push({gravity : (new THREE.Vector3(gravitysRaw[i][0], gravitysRaw[i][1], gravitysRaw[i][2]))});
+        gravitys.push({
+              gravity : (new THREE.Vector3(gravitysRaw[i][0], gravitysRaw[i][1], gravitysRaw[i][2])),
+              point: (new THREE.Vector3(measuringPoints[i][0], measuringPoints[i][1], measuringPoints[i][2]))
+            });
       }
 
       console.log("Total gravity calculation took: " + (performance.now() - t0).toFixed(2) + " ms");
@@ -89,16 +95,18 @@ export class Physics{
         var dx = voxelPoints[i][0] - measuringPoints[this.thread.x][0];
         var dy = voxelPoints[i][1] - measuringPoints[this.thread.x][1];
         var dz = voxelPoints[i][2] - measuringPoints[this.thread.x][2];
+        var r = (dx*dx + dy*dy + dz*dz) * this.constants.radiusCompensate;
 
-        var r = dx*dx + dy*dy + dz*dz;
+        //Calculate g scalar, and compensate r^2 to earth size
         var g = this.constants.gravityHelper / r; // g = G * M / r^2
 
         //Normalize the radius vector and multiply by the 'g' scalar
-        var len = Math.sqrt(r);
+        var len = Math.sqrt(dx*dx + dy*dy + dz*dz);
         dx = (dx / len) * g;
         dy = (dy / len) * g;
         dz = (dz / len) * g;
 
+        //Add this voxel gravity vector to the total gravity vector
         gravityX += dx;
         gravityY += dy;
         gravityZ += dz;
@@ -120,7 +128,7 @@ export class Physics{
     Interpollate between A and B point n times and creates and returns
     an array of gravitational field datas
   */
-  interPollateGravityField(A, B, n, updateProgressBar){
+  interPollateGravityField(A, B, n){
     let measuringPoints = [];  //The points to which we calculate gravity value
 
     var chartPointGroup = new THREE.Group();
@@ -145,10 +153,9 @@ export class Physics{
     center.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
 
     gravitys.map((data) => {
-      data.distance = data.gravity.distanceTo(center) * distanceScale;
+      data.distanceToCenter = data.point.distanceTo(center) * distanceScale;
       return data;
     });
-
     window.scene.add(chartPointGroup);
 
     return gravitys;
@@ -164,11 +171,11 @@ export class Physics{
   }
 
   //TODO: temporary here only
-  updateChart(updateProgressBar){
+  updateChart(){
     let start  = new THREE.Vector3(0, 0, -150); //Start of the interpollation
     let end    = new THREE.Vector3(0, 0, 150);  //End of the interpollation
-    let data = this.interPollateGravityField(start, end, 500, updateProgressBar);
-    let labels = data.map(x => x.distance / 1000 );
+    let data = this.interPollateGravityField(start, end, 500);
+    let labels = data.map(x => x.distanceToCenter / 1000 );
     data = data.map(x => x.gravity.length() );
     gravityChart.updateChart({labels, data});
   }
