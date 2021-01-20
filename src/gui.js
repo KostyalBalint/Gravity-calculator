@@ -1,6 +1,6 @@
 //User interface releated javascript
 
-import $ from "jquery";
+//import $ from "jquery";
 
 export function init(CONFIG){
 

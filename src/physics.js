@@ -12,6 +12,27 @@ export class Physics{
     this.gpu = new GPU(); //GPU instance to calculate gravity paralell
 
     window.physics = this;
+
+    this.directions = {
+      x: {
+        name: "X axis",
+        color: "#d64545", // Red
+        start: new THREE.Vector3( 150, 0, 0),
+        end:   new THREE.Vector3(-150, 0, 0)
+      },
+      y: {
+        name: "Y axis",
+        color: "#45d645", // Green
+        start: new THREE.Vector3(0,  150, 0),
+        end:   new THREE.Vector3(0, -150, 0)
+      },
+      z: {
+        name: "Z axis",
+        color: "#4590d6", // Blue
+        start: new THREE.Vector3(0, 0, 150),
+        end:   new THREE.Vector3(0, 0, -150)
+      },
+    }
   }
 
   massPerVoxel(){
@@ -128,8 +149,15 @@ export class Physics{
     Interpollate between A and B point n times and creates and returns
     an array of gravitational field datas
   */
-  interPollateGravityField(A, B, n){
+  interPollateGravityField(A, B, n, color){
     let measuringPoints = [];  //The points to which we calculate gravity value
+
+    //Remove the previos point group if any
+    scene.traverse(function(child){
+        if(child.name == "chartPoints"){
+           scene.remove(child);
+        }
+    });
 
     var chartPointGroup = new THREE.Group();
     chartPointGroup.name = "chartPoints";
@@ -138,7 +166,7 @@ export class Physics{
       //let vector = A.lerp(B, i/n);
       let vector = this.getPointInBetweenByPerc(A, B, i/n);
 
-      chartPointGroup.add(window.threeView.createPoint(vector.x, vector.y, vector.z, 0xd64545));
+      chartPointGroup.add(window.threeView.createPoint(vector.x, vector.y, vector.z, color));
 
       //Translate the given threeJs Vector to the VoxelWorld space
       vector.applyMatrix4(this.voxelWorld.getThreeJsWorldTransformMatrix().invert());
@@ -172,12 +200,14 @@ export class Physics{
 
   //TODO: temporary here only
   updateChart(){
-    let start  = new THREE.Vector3(0, 0, -150); //Start of the interpollation
-    let end    = new THREE.Vector3(0, 0, 150);  //End of the interpollation
-    let data = this.interPollateGravityField(start, end, 500);
+    let chartAxis = $("input[name='chartRadio']:checked").data('axis');
+    let start = this.directions[chartAxis].start; //Start of the interpollation
+    let end   = this.directions[chartAxis].end;   //End of the interpollation
+    let direction = this.directions[chartAxis];
+    let data = this.interPollateGravityField(start, end, 500, direction.color);
     let labels = data.map(x => x.distanceToCenter / 1000 );
     data = data.map(x => x.gravity.length() );
-    gravityChart.updateChart({labels, data});
+    gravityChart.updateChart({labels, data}, direction);
   }
 
 }
