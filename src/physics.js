@@ -9,6 +9,8 @@ export class Physics{
     this.diameter = 12742000; //Diameter of the earth in meters
     this.voxelWorld = voxelWorld;
 
+    this.gpu = new GPU(); //GPU instance to calculate gravity paralell
+
     window.physics = this;
   }
 
@@ -20,6 +22,7 @@ export class Physics{
     Get every point from the VoxelWord, so we can calculate gravity for every on of them
   */
   getVoxelGeometryPoints(){
+    let t0 = performance.now();
     let geometryPoints = [];
 
     for (let x = 0; x < this.voxelWorld.cellSize; x++) {
@@ -32,6 +35,8 @@ export class Physics{
             }
         }
     }
+    console.log(" - Generating voxel point array took: " + (performance.now() - t0).toFixed(2) + " ms");
+
     return geometryPoints;
   }
 
@@ -47,42 +52,12 @@ export class Physics{
 
       var voxelPoints = this.getVoxelGeometryPoints();
 
-      const gpu = new GPU();
-      const calculateGravity = gpu.createKernel(function(voxelPoints, measuringPoints){
-        var gravityX = 0, gravityY = 0, gravityZ = 0;
+      const calculateGravity = this.createGravityGPUFunction(measuringPoints, voxelPoints, radiusCompensate, gravityHelper);
 
-        for (var i = 0; i < this.constants.voxelLength; i++) {
-          //Calculate r^2 (distanceToSquared function)
-          var dx = voxelPoints[i][0] - measuringPoints[this.thread.x][0];
-          var dy = voxelPoints[i][1] - measuringPoints[this.thread.x][1];
-          var dz = voxelPoints[i][2] - measuringPoints[this.thread.x][2];
-
-          var r = dx*dx + dy*dy + dz*dz;
-          var g = this.constants.gravityHelper / r; // g = G * M / r^2
-
-          //Normalize the radius vector and multiply by the 'g' scalar
-          var len = Math.sqrt(r);
-          dx = (dx / len) * g;
-          dy = (dy / len) * g;
-          dz = (dz / len) * g;
-
-          gravityX += dx;
-          gravityY += dy;
-          gravityZ += dz;
-        }
-
-        return [gravityX, gravityY, gravityZ];
-      }, {
-        constants: {
-                      voxelLength: voxelPoints.length,
-                      radiusCompensate,
-                      gravityHelper
-                    },
-        output: [measuringPoints.length],
-      });
-      /* -----------------------------------------------
-           This function is implemented to run on GPU
-         -----------------------------------------------
+       /*-----------------------------------------------*
+        |   This function is implemented to run on GPU  |
+        |   Parallelize by th gravitys array            |
+        *-----------------------------------------------*
       gravitys.map((data) => {
         voxelPoints.forEach((voxel) => {
           var r = data.point.distanceToSquared(voxel) * radiusCompensate; //r^2
@@ -93,15 +68,52 @@ export class Physics{
           return data;
         });
       });*/
-
+      let t0GPU = performance.now();
       var gravitysRaw =  calculateGravity(voxelPoints, measuringPoints);
+      console.log(" - Gravity calculation GPU part took: " + (performance.now() - t0GPU).toFixed(2) + " ms");
       let gravitys = [];
       for (var i = 0; i < measuringPoints.length; i++) {
         gravitys.push({gravity : (new THREE.Vector3(gravitysRaw[i][0], gravitysRaw[i][1], gravitysRaw[i][2]))});
       }
 
-      console.log("Calculate gravity took: " + (performance.now() - t0).toFixed(2) + " ms");
+      console.log("Total gravity calculation took: " + (performance.now() - t0).toFixed(2) + " ms");
       return gravitys;
+  }
+
+  createGravityGPUFunction(measuringPoints, voxelPoints, radiusCompensate, gravityHelper){
+      const calculateGravity = this.gpu.createKernel(function(voxelPoints, measuringPoints){
+      var gravityX = 0, gravityY = 0, gravityZ = 0;
+
+      for (var i = 0; i < this.constants.voxelLength; i++) {
+        //Calculate r^2 (distanceToSquared function)
+        var dx = voxelPoints[i][0] - measuringPoints[this.thread.x][0];
+        var dy = voxelPoints[i][1] - measuringPoints[this.thread.x][1];
+        var dz = voxelPoints[i][2] - measuringPoints[this.thread.x][2];
+
+        var r = dx*dx + dy*dy + dz*dz;
+        var g = this.constants.gravityHelper / r; // g = G * M / r^2
+
+        //Normalize the radius vector and multiply by the 'g' scalar
+        var len = Math.sqrt(r);
+        dx = (dx / len) * g;
+        dy = (dy / len) * g;
+        dz = (dz / len) * g;
+
+        gravityX += dx;
+        gravityY += dy;
+        gravityZ += dz;
+      }
+
+      return [gravityX, gravityY, gravityZ];
+    }, {
+      constants: {
+                    voxelLength: voxelPoints.length,
+                    radiusCompensate,
+                    gravityHelper
+                  },
+      output: [measuringPoints.length],
+    });
+    return calculateGravity;
   }
 
   /**

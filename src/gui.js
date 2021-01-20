@@ -35,13 +35,12 @@ export function init(CONFIG){
 
   //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
-    $("#progessBarOverlay").fadeIn(function(){
-      window.physics.updateChart(function(precentage){
-        $("#progressBar").css("width", precentage + "%").text(precentage + " %");
-        console.log(precentage);
-      });
+    $("#calculationOverlay").fadeIn(function(){
+      //Update chart can't be async because of GPU computation, this means
+      //We can't update the GUI while it's running
+      window.physics.updateChart();
     });
-    $("#progessBarOverlay").fadeOut();
+    $("#calculationOverlay").fadeOut();
   });
 
 }
