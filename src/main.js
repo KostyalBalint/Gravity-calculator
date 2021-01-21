@@ -29,7 +29,9 @@ var geometrys = [
   },{
     name: "Torus",
     function: (vector, min, max) => {
-      return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - max*2/3, 2) + Math.pow(vector.x, 2) < max;
+      let r = max / 4;
+      let R = (3/2) * r;
+      return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - R, 2) + Math.pow(vector.x, 2) < r * r;
     }
   },{
     name: "Flat earth",

@@ -208,8 +208,8 @@ export class Physics{
   generateThreeDGravity(){
     let measuringPoints = [];  //The points to which we calculate gravity value
 
-    let min = -100; //Coordinate min in THREE JS coordinate system
-    let max = 100;  //Coordinate max in THREE JS coordinate system
+    let min = -50; //Coordinate min in THREE JS coordinate system
+    let max = 50;  //Coordinate max in THREE JS coordinate system
     let pointCountPerAxis = 11;
     let gravityVectorMaxLength = 10;  //Length of the longest gravity vector
 
