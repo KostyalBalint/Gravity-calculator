@@ -21,7 +21,7 @@
                   <hr>
 
                   <label for="voxelCount" class="form-label">Cubic voxel size <span id="voxelCountText"></span> Pcs</label>
-                  <input type="range" class="form-range success" min="2" max="128" step="1" id="voxelCount">
+                  <input type="range" class="form-range success" min="2" max="128" step="2" id="voxelCount">
                   <div class="mb-3 d-flex flex-row align-items-center">
                     <p class="mb-0">Shape:</p>
                     <div class="p-3 pb-0 pt-0">
@@ -29,7 +29,7 @@
                       </select>
                     </div>
                   </div>
-
+                  <hr>
                   <p class="mb-1">View options:</p>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="textureShowCheckbox" checked/>
@@ -47,19 +47,20 @@
                     <input class="form-check-input" type="checkbox" id="gravityPoints" checked/>
                     <label class="form-check-label" for="gravityPoints">Show 3D gravitational field</label>
                   </div>
+                  <hr>
                   <p class="mb-1 mt-3">Chart generate options</p>
                   <div class="btn-group btn-group-sm"  role="group">
                     <input type="radio" class="btn-check" name="chartRadio" id="chartRadioX" data-axis="x" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="chartRadioX">X axis</label>
+                    <label class="btn btn-outline-danger" for="chartRadioX">X axis</label>
 
                     <input type="radio" class="btn-check" name="chartRadio" id="chartRadioY" data-axis="y" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="chartRadioY">Y axis</label>
+                    <label class="btn btn-outline-success" for="chartRadioY">Y axis</label>
 
                     <input type="radio" class="btn-check" name="chartRadio" id="chartRadioZ" data-axis="z" autocomplete="off">
                     <label class="btn btn-outline-primary" for="chartRadioZ">Z axis</label>
                   </div>
+                  <div class="btn btn-sm btn-secondary" id="generateChartBtn">Generate Chart</div>
                   <hr>
-                  <div class="btn btn-sm btn-primary" id="generateChartBtn">Generate Chart</div>
                 </div>
               </div>
             </div>

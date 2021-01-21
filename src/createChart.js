@@ -54,6 +54,7 @@ class GravityChart{
   }
 
   updateChart(data, direction){
+    $("#chartPoints").prop('disabled', !direction);
     this.chart.data.datasets[0].borderColor = direction ? direction.color : "";
     this.chart.data.datasets[0].label = direction ? "Gravitational field strength along the: " + direction.name : "";
     this.chart.data.labels = data ? data.labels.map(x => x.toFixed(2)) : [];

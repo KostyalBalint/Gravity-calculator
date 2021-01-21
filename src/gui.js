@@ -40,7 +40,6 @@ export function init(CONFIG, geometrys){
 
   //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
-    $("#chartPoints").prop('disabled', false);
     $("#calculationOverlay").fadeIn(function(){
       //50 ms timeout gives enough time to the GUI to update before we calculate the chart
       setTimeout(function(){
