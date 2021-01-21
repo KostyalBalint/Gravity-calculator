@@ -15,6 +15,7 @@ class GravityChart{
         datasets: [{
             label: 'Gravitational field strength',
             borderColor: "",
+            pointRadius: 0,
             fill: false,
             data: [],
         }]
@@ -29,7 +30,7 @@ class GravityChart{
         scales: {
           xAxes: [{
             ticks: {
-              autoSkip: true,
+              maxTicksLimit: 15,
               maxRotation: 20,
               stepSize: 10,
               callback: (val) => { return val + ' km' }
@@ -41,13 +42,26 @@ class GravityChart{
           }],
           yAxes:[{
             ticks: {
-              callback: (val) => { return val + ' m/s^2' }
+              callback: (val) => { return val + " m/s\u00B2" }
             },
             scaleLabel: {
               display: true,
               labelString: 'Gravitational field strength'
             }
           }],
+        },
+        tooltips: {
+          mode: 'nearest',
+          intersect: false,
+          caretPadding: 2,
+          callbacks: {
+            label: function(tooltipItem, data) {
+              return "g = " + tooltipItem.yLabel + " m/s\u00B2";
+            },
+            title: (tooltipItem, data) => {
+              return "Distance: " + tooltipItem[0].label + " km";
+            },
+          }
         }
       }
   });
