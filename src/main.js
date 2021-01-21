@@ -77,6 +77,10 @@ $("#voxelCount").on('change', createVoxelGeometry);
 $("#geometrySelect").on('change', createVoxelGeometry);
 
 function createVoxelGeometry(){
+  //Reset switches
+  $("#gravityPoints").prop('checked', true);
+  $("#gravityPoints").prop('disabled', true);
+
   var min = -CONFIG.cellSize / 2;
   var max =  CONFIG.cellSize / 2;
   var geometryId = parseInt($("#geometrySelect").val());

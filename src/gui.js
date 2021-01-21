@@ -38,6 +38,11 @@ export function init(CONFIG, geometrys){
     window.scene.getObjectByName( "chartPoints" ).visible = $(this).prop('checked');
   });
 
+  //Toggle gravity vectors in ThreeJs Scene
+  $("#gravityPoints").on("click", function(){
+    window.scene.getObjectByName("gravityVectors").visible = $(this).prop('checked');
+  })
+
   //Generate / Regenerate the chart
   $("#generateChartBtn").on("click", function(){
     $("#calculationOverlay").fadeIn(function(){
@@ -47,6 +52,18 @@ export function init(CONFIG, geometrys){
         //We can't update the GUI while it's running
         window.physics.updateChart();
 
+        //After the update finnished fadeOut the overlay
+        $("#calculationOverlay").fadeOut();
+      }, 50);
+    });
+  });
+
+  $("#generateGravityPoints").on("click", function(){
+    $("#gravityPoints").prop('disabled', false);
+    $("#calculationOverlay").fadeIn(function(){
+      //50 ms timeout gives enough time to the GUI to update before we calculate the chart
+      setTimeout(function(){
+        window.physics.generateThreeDGravity();
         //After the update finnished fadeOut the overlay
         $("#calculationOverlay").fadeOut();
       }, 50);

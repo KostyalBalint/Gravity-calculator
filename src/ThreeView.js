@@ -116,12 +116,59 @@ export class ThreeView{
     return sphere;
   }
 
+  createArrow(origin, vector, maxLen){
+    let arrowGroup = new THREE.Group();
+
+    //Create arrow materials
+    let color = this.perc2color(100 - (vector.length() / maxLen) * 100);
+    const material = new THREE.MeshBasicMaterial( {color} );
+    const lineMaterial  = new THREE.LineBasicMaterial( { color: 0x000000, transparent: true, opacity: 0.5} );
+
+    //Creat the arrowhead
+    const headGeometry = new THREE.ConeBufferGeometry( .8, 2, 5 );
+    arrowGroup.add(new THREE.Mesh( headGeometry, material ));
+    //arrowGroup.add(new THREE.LineSegments( headGeometry, lineMaterial ));
+
+    //Create the arrow tail
+    let tailLen = vector.length();
+    const tailGeometry = new THREE.CylinderGeometry( .3, .3, tailLen, 3 );
+    tailGeometry.translate(0, -tailLen/2, 0);
+    arrowGroup.add(new THREE.Mesh( tailGeometry, material ));
+    //arrowGroup.add(new THREE.LineSegments( tailGeometry, lineMaterial ));
+
+    //Rotate the arrow
+    const quaternion = new THREE.Quaternion();
+    let dir = vector.normalize();
+		quaternion.setFromAxisAngle( (new THREE.Vector3( dir.z, 0, - dir.x )).normalize(), Math.acos( dir.y ) );
+    arrowGroup.applyQuaternion(quaternion);
+
+    //Move the arrow to place
+    var translationMx = new THREE.Matrix4().makeTranslation(origin.x, origin.y, origin.z);
+    arrowGroup.applyMatrix4(translationMx);
+    return arrowGroup;
+  }
+
   removeGroupByName(name){
     this.scene.traverse(function(child){
         if(child.name == name){
            scene.remove(child);
         }
     });
+  }
+
+
+  perc2color(perc) {
+  	var r, g, b = 0;
+  	if(perc < 50) {
+  		r = 255;
+  		g = Math.round(5.1 * perc);
+  	}
+  	else {
+  		g = 255;
+  		r = Math.round(510 - 5.10 * perc);
+  	}
+  	var h = r * 0x10000 + g * 0x100 + b * 0x1;
+    return h;
   }
 
   /*                End of helper functions                */

@@ -205,4 +205,57 @@ export class Physics{
     gravityChart.updateChart({labels, data}, direction);
   }
 
+  generateThreeDGravity(){
+    let measuringPoints = [];  //The points to which we calculate gravity value
+
+    let min = -100; //Coordinate min in THREE JS coordinate system
+    let max = 100;  //Coordinate max in THREE JS coordinate system
+    let pointCountPerAxis = 11;
+    let gravityVectorMaxLength = 10;  //Length of the longest gravity vector
+
+    let increment = Math.round((max - min) / pointCountPerAxis);
+    for (let x = min; x < max; x += increment) {
+        for (let y = min; y < max; y += increment) {
+            for (let z = min; z < max; z += increment) {
+              let vector = new THREE.Vector3(x, y, z);
+              //Translate the given threeJs Vector to the VoxelWorld space
+              vector.applyMatrix4(window.world.getThreeJsWorldTransformMatrix().invert());
+              measuringPoints.push([vector.x, vector.y, vector.z]);
+            }
+        }
+    }
+    //Calculate the gravity for every point
+    var gravitys = this.calculateGravitationField(measuringPoints);
+
+    var longestGravityVector = new THREE.Vector3(0, 0, 0);
+
+    //Translate the gravity points back to THREE Js coordinate system
+    gravitys.map((gravity) => {
+      //Get the longest gravity vector, so we can map the length and colors according to it
+      if(gravity.gravity.lengthSq() > longestGravityVector.lengthSq()){
+        longestGravityVector = gravity.gravity;
+      }
+      gravity.point.applyMatrix4(window.world.getThreeJsWorldTransformMatrix());
+      return gravity;
+    });
+
+    //Map every gravity vectors length between 0 and gravityVectorMaxLength
+    var longestLength = longestGravityVector.length();
+    gravitys.map((gravity) => {
+      gravity.gravity.divideScalar(longestLength).multiplyScalar(gravityVectorMaxLength);
+    });
+
+    //Remove the previos point group if any
+    window.threeView.removeGroupByName("gravityVectors");
+
+    var gravityPointGroup = new THREE.Group();
+    gravityPointGroup.name = "gravityVectors";
+
+    gravitys.forEach((gravity) => {
+      gravityPointGroup.add(window.threeView.createArrow(gravity.point, gravity.gravity, gravityVectorMaxLength));
+    });
+    window.scene.add(gravityPointGroup);
+
+  }
+
 }
