@@ -4,11 +4,11 @@
 
 ## Feladat
 
-Numerikus integrálással számítsuk ki egy tömör, egyenletes térfogati tömegsűrűségű gömb gravitációs térerősségét a tér tetszőleges pontjában! 
-A gömböt **közelítsük kicsiny kockákkal**, amelyek a oldaléle sokkal kisebb a gömb sugaránál (a ≪ R) (minecraft stílus). 
-Legyen a *„minecraftos”* gömb teljes tömege M ! 
-Hasonlítsuk össze a **gravitációs térerősség irányát és nagyságát** az elmélet által jósolt értékekkel, a **gömbön kívül és belül**. 
-Ábrázoljuk a gravitációs térerősség nagyságát a gömb középpontjától mért távolság függ- vényében! Hogyan függ az eredmény az a/R aránytól?
+Numerikus integrálással számítsuk ki egy tömör, egyenletes térfogati tömegsűrűségű gömb gravitációs térerősségét a tér tetszőleges pontjában!
+A gömböt **közelítsük kicsiny kockákkal**, amelyek a oldaléle sokkal kisebb a gömb sugaránál (a ≪ R) (minecraft stílus).
+Legyen a *„minecraftos”* gömb teljes tömege M !
+Hasonlítsuk össze a **gravitációs térerősség irányát és nagyságát** az elmélet által jósolt értékekkel, a **gömbön kívül és belül**.
+Ábrázoljuk a gravitációs térerősség nagyságát a gömb középpontjától mért távolság függvényében! Hogyan függ az eredmény az a/R aránytól?
 
 
 ## Credits

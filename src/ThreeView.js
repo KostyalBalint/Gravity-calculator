@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import * as Stats from 'stats.js';
+//import * as Stats from 'stats.js';
 
 
 export class ThreeView{
@@ -15,9 +15,9 @@ export class ThreeView{
 
     this.initRenderer();              //Initialize the renderer
 
-    this.stats = new Stats();              //Initialize the FPS viewer
-    this.stats.domElement.style.cssText = 'position:absolute;top:0px;right:0px;';
-    document.body.appendChild(this.stats.dom);
+    //this.stats = new Stats();              //Initialize the FPS viewer
+    //this.stats.domElement.style.cssText = 'position:absolute;top:0px;right:0px;';
+    //document.body.appendChild(this.stats.dom);
 
     window.scene = this.scene;        //Add to window object so three js chrome debugger finds Three js
     window.THREE = THREE;

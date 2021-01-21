@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import * as Stats from 'stats.js';
+//import * as Stats from 'stats.js';
 
 import {ThreeView} from './ThreeView.js'
 import {VoxelWorld} from './VoxelWorld.js';   //Generates the voxel mesh for ThreeJs
@@ -9,11 +9,12 @@ import gravityChart from './createChart.js';
 import $ from "jquery";
 import * as GUI from './gui.js';              //User interface
 
-var scene, canvas, renderer, camera, controls, stats;
+var scene, canvas, renderer, camera, controls;
+//var stats;
 
 var CONFIG = {
   wordSize: 100,    //The size of the VoxelWorld in the ThreeJs viewer
-  cellSize: 128,    //Divide the space for this many unit
+  cellSize: 64,    //Divide the space for this many unit
   antialias: false,
 };
 
@@ -145,7 +146,7 @@ function animate(){
   threeView.controls.update();
 
   threeView.renderer.render( threeView.scene, threeView.camera );
-  threeView.stats.update();
+  //threeView.stats.update();
 
 }
 
