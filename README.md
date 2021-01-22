@@ -3,7 +3,7 @@
 ### 2020 őszi félév - Fizika 1i IMSC plusz pont feladat
 
 <p align="center">
-  <img src="./img/banner.png?raw=true" alt="Banner sphere image"/>
+  <img src="https://raw.githubusercontent.com/KostyalBalint/Gravity-calculator/main/img/banner.png?raw=true" alt="Banner sphere image"/>
 </p>
 
 ## Feladat
@@ -18,9 +18,13 @@ Hasonlítsuk össze a **gravitációs térerősség irányát és nagyságát** 
 
 https://kostyalbalint.github.io/Gravity-calculator/
 
+## Dokumentáció 
+
+A dokumentáció elérhető PDF formában a **docs** mappában, vagy az alábbi linken [Dokumentáció](https://github.com/KostyalBalint/Gravity-calculator/blob/main/docs/Gravity%20Calculator%20Dokument%C3%A1ci%C3%B3.pdf)
+
 ## Credits
 
-Megjelenítéshez használt kiinduló gondolat[Threejsfundamentals](https://threejsfundamentals.org/threejs/lessons/threejs-voxel-geometry.html)
+Megjelenítéshez használt kiinduló gondolat [Threejsfundamentals](https://threejsfundamentals.org/threejs/lessons/threejs-voxel-geometry.html)
 
 3D megjelenítés [Three Js](https://threejs.org/)
 
