@@ -29,9 +29,9 @@ var geometrys = [
   },{
     name: "Torus",
     function: (vector, min, max) => {
-      let r = max / 4;
-      let R = (3/2) * r;
-      return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - R, 2) + Math.pow(vector.x, 2) < r * r;
+      let R = (2/3) * max;  //R is the distance from the center of the tube to the center of the torus
+      let r = max - R;    //r is the radius of the tube
+      return Math.pow(Math.sqrt(Math.pow(vector.y, 2) + Math.pow(vector.z, 2)) - R, 2) + Math.pow(vector.x, 2) < (r * r);
     }
   },{
     name: "Flat earth",
