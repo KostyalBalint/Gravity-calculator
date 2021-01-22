@@ -2,6 +2,10 @@
 
 ### 2020 őszi félév - Fizika 1i IMSC plusz pont feladat
 
+<p align="center">
+  <img src="./img/banner.png?raw=true" alt="Banner sphere image"/>
+</p>
+
 ## Feladat
 
 Numerikus integrálással számítsuk ki egy tömör, egyenletes térfogati tömegsűrűségű gömb gravitációs térerősségét a tér tetszőleges pontjában!
@@ -10,11 +14,21 @@ Legyen a *„minecraftos”* gömb teljes tömege M !
 Hasonlítsuk össze a **gravitációs térerősség irányát és nagyságát** az elmélet által jósolt értékekkel, a **gömbön kívül és belül**.
 Ábrázoljuk a gravitációs térerősség nagyságát a gömb középpontjától mért távolság függvényében! Hogyan függ az eredmény az a/R aránytól?
 
+## Működő alkalmazás
+
+https://kostyalbalint.github.io/Gravity-calculator/
 
 ## Credits
 
-Megjelenítéshez használt kiinduló gondolat
-https://threejsfundamentals.org/threejs/lessons/threejs-voxel-geometry.html
+Megjelenítéshez használt kiinduló gondolat[Threejsfundamentals](https://threejsfundamentals.org/threejs/lessons/threejs-voxel-geometry.html)
+
+3D megjelenítés [Three Js](https://threejs.org/)
+
+Grafikon megjelenítése [Chart Js](https://www.chartjs.org/)
+
+Párhuzamosított fizika szimulációs GPU-n [GPU Js](https://gpu.rocks/#/)
+
+JavaScript bundle [Webpack](https://webpack.js.org/)
 
 ## License
 
